@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\ioann\Bin\ogre\include\OGRE;C:\Users\ioann\Bin\ogre\include\OGRE\Bites;C:\Users\ioann\Bin\ogre\include;C:\Users\ioann\Bin\ogre\include\OGRE\Overlay;C:\Users\ioann\Bin\ogre\include\OGRE\RTShaderSystem;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ioann\Bin\ogre\include\OGRE;C:\Users\ioann\Bin\ogre\include\OGRE\Bites;C:\Users\ioann\Bin\ogre\include;C:\Users\ioann\Bin\ogre\include\OGRE\Overlay;C:\Users\ioann\Bin\ogre\include\OGRE\RTShaderSystem;C:\Users\ioann\Desktop\vcpkg\packages\bullet3_x64-windows\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
