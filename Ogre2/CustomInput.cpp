@@ -6,9 +6,9 @@
 bool CustomInput::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
     std::cout << evt.keysym.sym << std::endl;
-    if (evt.keysym.sym == 44)  // Check for key 'K'
+    if (evt.keysym.sym == 27) //Escape key press close the app
     {
-        std::cout << "Hello" << std::endl;
+        m_Ctx->closeApp();
         return true;
     }
     return false;

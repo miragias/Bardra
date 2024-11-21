@@ -58,7 +58,7 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
-    ctx.addInputListener(new CustomInput());
+    ctx.addInputListener(new CustomInput(&ctx));
     ctx.getRoot()->startRendering();
     ctx.closeApp();
     return 0;
