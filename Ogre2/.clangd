@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:
+    - -IC:\Users\ioann\Bin\ogre\include\OGRE
+    - -IC:\Users\ioann\Bin\ogre\include\OGRE\Bites
+    - -IC:\Users\ioann\Bin\ogre\include
+    - -IC:\Users\ioann\Bin\ogre\include\OGRE\Overlay
+    - -IC:\Users\ioann\Bin\ogre\include\OGRE\RTShaderSystem

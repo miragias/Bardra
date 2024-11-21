@@ -1,12 +1,32 @@
 #include <Ogre.h>
 #include <Bites/OgreApplicationContext.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
+#include <iostream>
 
 #ifdef _DEBUG
 #define OGRE_LIB_SUFFIX "_d"
 #else
 #define OGRE_LIB_SUFFIX ""
 #endif
+
+class CustomInputListener : public OgreBites::InputListener
+{
+public:
+    // Handle key press events
+    bool keyPressed(const OgreBites::KeyboardEvent& evt) override
+    {
+        // Check if the key pressed is 'K'
+        std::cout << evt.keysym.sym << std::endl;
+        if (evt.keysym.sym == 44)
+        {
+            // Output "Hello" to the console
+            std::cout << "Hello" << std::endl;
+            return true;
+        }
+        return false;
+    }
+};
+
 
 class CustomApplicationContext : public OgreBites::ApplicationContext
 {
@@ -51,14 +71,10 @@ protected:
         node->attachObject(ent);
     }
 
+
     OgreBites::NativeWindowPair createWindow(const Ogre::String& name, uint32_t w = 0, uint32_t h = 0,
         Ogre::NameValuePairList miscParams = Ogre::NameValuePairList()) override
     {
-        Ogre::NameValuePairList params;
-        params["FSAA"] = "4";  // Anti-aliasing
-        params["vsync"] = "true";
-
-        // Set custom window dimensions
         return OgreBites::ApplicationContext::createWindow(name, 1600, 1200, miscParams);
     }
 };
@@ -67,7 +83,10 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
+    ctx.addInputListener(new CustomInputListener());
     ctx.getRoot()->startRendering();
+
+
     ctx.closeApp();
     return 0;
 }
