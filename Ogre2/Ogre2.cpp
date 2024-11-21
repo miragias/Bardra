@@ -1,32 +1,7 @@
 #include <Ogre.h>
 #include <Bites/OgreApplicationContext.h>
 #include <RTShaderSystem/OgreShaderGenerator.h>
-#include <iostream>
-
-#ifdef _DEBUG
-#define OGRE_LIB_SUFFIX "_d"
-#else
-#define OGRE_LIB_SUFFIX ""
-#endif
-
-class CustomInputListener : public OgreBites::InputListener
-{
-public:
-    // Handle key press events
-    bool keyPressed(const OgreBites::KeyboardEvent& evt) override
-    {
-        // Check if the key pressed is 'K'
-        std::cout << evt.keysym.sym << std::endl;
-        if (evt.keysym.sym == 44)
-        {
-            // Output "Hello" to the console
-            std::cout << "Hello" << std::endl;
-            return true;
-        }
-        return false;
-    }
-};
-
+#include "CustomInput.h"
 
 class CustomApplicationContext : public OgreBites::ApplicationContext
 {
@@ -83,10 +58,8 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
-    ctx.addInputListener(new CustomInputListener());
+    ctx.addInputListener(new CustomInput());
     ctx.getRoot()->startRendering();
-
-
     ctx.closeApp();
     return 0;
 }
