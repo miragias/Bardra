@@ -5,9 +5,9 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
+#include <btBulletDynamicsCommon.h>
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
-#include <btBulletDynamicsCommon.h>
 
 #include "CustomInput.h"
 
@@ -78,7 +78,7 @@ protected:
 
         initBulletPhysics(scnMgr);
 
-        m_MoveHandles = new MoveHandles(scnMgr, bn, cam);
+        m_MoveHandles = new MoveHandles(scnMgr, bn, cam, boxRigidBody);
     }
 
     void initBulletPhysics(Ogre::SceneManager* scnMgr)

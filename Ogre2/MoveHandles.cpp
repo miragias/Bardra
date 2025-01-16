@@ -1,5 +1,7 @@
 #include "MoveHandles.h"
 #include <iostream>
+#include <LinearMath/btVector3.h>
+#include <LinearMath/btDefaultMotionState.h>
 
 const float MoveHandles::HANDLE_SCALE = 0.002f;
 const float MoveHandles::HANDLE_LENGTH = 0.4f;
@@ -127,26 +129,26 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
 
     if (currentPos != Ogre::Vector3::ZERO) {
         Ogre::Vector3 delta = currentPos - mLastMousePos;
-
-        // Project the movement onto the selected axis
         float projection = delta.dotProduct(moveDir);
         Ogre::Vector3 movement = moveDir * projection;
 
-        std::cout << "Delta: " << delta << " Movement: " << movement << std::endl;
-
-        mTargetNode->translate(movement, Ogre::Node::TS_WORLD);
-
-        /*
-        // Also update the physics body if it exists
-        if (mTargetNode->getName() == "bx") {  // Assuming this is your ball node
-            Ogre::Vector3 newPos = mTargetNode->getPosition();
+        // Update physics body position
+        if (mPhysicsBody) {
             btTransform trans;
-            trans.setIdentity();
-            trans.setOrigin(btVector3(newPos.x, newPos.y, newPos.z));
-            // You'll need to store the rigid body pointer or get it from your physics world
-            // boxRigidBody->setWorldTransform(trans);
+            mPhysicsBody->getMotionState()->getWorldTransform(trans);
+            btVector3 currentPhysicsPos = trans.getOrigin();
+            btVector3 newPos = currentPhysicsPos + btVector3(movement.x, movement.y, movement.z);
+
+            trans.setOrigin(newPos);
+            mPhysicsBody->setWorldTransform(trans);
+
+            // Reset velocity to prevent drift
+            mPhysicsBody->setLinearVelocity(btVector3(0, 0, 0));
+            mPhysicsBody->setAngularVelocity(btVector3(0, 0, 0));
+
+            // Optionally, you might want to activate the body
+            mPhysicsBody->activate(true);
         }
-        */
 
         mLastMousePos = currentPos;
     }
