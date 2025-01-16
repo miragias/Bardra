@@ -138,10 +138,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CustomInput.cpp" />
+    <ClCompile Include="MoveHandles.cpp" />
     <ClCompile Include="Ogre2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomInput.h" />
+    <ClInclude Include="MoveHandles.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

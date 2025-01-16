@@ -21,9 +21,15 @@
     <ClCompile Include="CustomInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MoveHandles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveHandles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,6 +18,10 @@ public:
     btDiscreteDynamicsWorld* dynamicsWorld;
     btRigidBody* boxRigidBody;
     Ogre::SceneNode* bn;
+    MoveHandles* getMoveHandles() { return m_MoveHandles; }
+
+private:
+    MoveHandles* m_MoveHandles;
 
 protected:
     void setup() override
@@ -49,7 +53,7 @@ protected:
         // Set up the camera
         Ogre::SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 40);     // Position camera
-        camNode->lookAt(Ogre::Vector3(0, 0, -1), Ogre::Node::TS_PARENT); // Look at origin
+        camNode->lookAt(Ogre::Vector3(0, 0, -5), Ogre::Node::TS_PARENT); // Look at origin
 
         Ogre::Camera* cam = scnMgr->createCamera("myCam");
         cam->setNearClipDistance(5);  // Adjust camera near clip distance
@@ -73,6 +77,8 @@ protected:
         bx->setMaterialName("Examples/Rockwall"); // Assign a material
 
         initBulletPhysics(scnMgr);
+
+        m_MoveHandles = new MoveHandles(scnMgr, bn, cam);
     }
 
     void initBulletPhysics(Ogre::SceneManager* scnMgr)
@@ -123,6 +129,11 @@ protected:
         // Update Ogre node position
         bn->setPosition(Ogre::Vector3(pos.getX(), pos.getY(), pos.getZ()));
 
+        // Update move handles
+        if (m_MoveHandles) {
+            m_MoveHandles->update();
+        }
+
         return true;
     }
 
@@ -137,7 +148,9 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
-    ctx.addInputListener(new CustomInput(&ctx));
+    CustomInput* input = new CustomInput(&ctx);
+    input->setMoveHandles(ctx.getMoveHandles());
+    ctx.addInputListener(input);
     ctx.getRoot()->startRendering();
     ctx.closeApp();
     return 0;
