@@ -82,23 +82,29 @@ Ogre::Vector3 MoveHandles::getMouseWorldPos(const Ogre::Vector2& mousePos, const
 }
 
 bool MoveHandles::mousePressed(const Ogre::Vector2& mousePos) {
-    std::cout << "hello";
-
     mSelectedAxis = getSelectedAxis(mousePos);
-    std::cout << mSelectedAxis;
     if (mSelectedAxis != None) {
-		std::cout << "set to dragging";
         mIsDragging = true;
-        // Create a plane perpendicular to the selected axis for movement
-        Ogre::Vector3 planeNormal;
+
+        // Use the same plane calculation as mouseMove
+        Ogre::Vector3 cameraDir = mCamera->getDerivedDirection();
+        Ogre::Vector3 moveDir;
+
         switch (mSelectedAxis) {
-        case X: planeNormal = Ogre::Vector3::UNIT_X; break;
-        case Y: planeNormal = Ogre::Vector3::UNIT_Y; break;
-        case Z: planeNormal = Ogre::Vector3::UNIT_Z; break;
+        case X: moveDir = Ogre::Vector3::UNIT_X; break;
+        case Y: moveDir = Ogre::Vector3::UNIT_Y; break;
+        case Z: moveDir = Ogre::Vector3::UNIT_Z; break;
         default: return false;
         }
+
+        // Create the same plane as in mouseMove
+        Ogre::Vector3 planeNormal = moveDir.crossProduct(cameraDir);
+        planeNormal = planeNormal.crossProduct(moveDir);
+        planeNormal.normalise();
+
         Ogre::Plane dragPlane(planeNormal, mTargetNode->getPosition());
         mLastMousePos = getMouseWorldPos(mousePos, dragPlane);
+
         return true;
     }
     return false;
