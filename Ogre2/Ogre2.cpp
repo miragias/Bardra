@@ -19,9 +19,13 @@ public:
     btRigidBody* boxRigidBody;
     Ogre::SceneNode* bn;
     MoveHandles* getMoveHandles() { return m_MoveHandles; }
+    Ogre::Camera* Camera;
+    Ogre::SceneNode* CamNode;
+    Ogre::SceneManager* SceneManager;
 
 private:
     MoveHandles* m_MoveHandles;
+
 
 protected:
     void setup() override
@@ -31,6 +35,7 @@ protected:
 
         // Create the scene manager
         Ogre::SceneManager* scnMgr = getRoot()->createSceneManager();
+        SceneManager = scnMgr;
 
         // Register the scene with the RTSS (Real-Time Shader System)
         Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
@@ -54,8 +59,10 @@ protected:
         Ogre::SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 40);     // Position camera
         camNode->lookAt(Ogre::Vector3(0, 0, -5), Ogre::Node::TS_PARENT); // Look at origin
+        CamNode = camNode;
 
         Ogre::Camera* cam = scnMgr->createCamera("myCam");
+        Camera = cam;
         cam->setNearClipDistance(5);  // Adjust camera near clip distance
         cam->setAutoAspectRatio(true);  // Automatically adjust aspect ratio based on window size
         camNode->attachObject(cam);
@@ -150,6 +157,7 @@ int main()
     ctx.initApp();
     CustomInput* input = new CustomInput(&ctx);
     input->setMoveHandles(ctx.getMoveHandles());
+    input->setCamera(ctx.Camera, ctx.CamNode, ctx.SceneManager);
     ctx.addInputListener(input);
     ctx.getRoot()->startRendering();
     ctx.closeApp();
