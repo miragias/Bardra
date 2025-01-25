@@ -3,10 +3,25 @@
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
-const float MoveHandles::HANDLE_SCALE = 0.002f;
-const float MoveHandles::HANDLE_LENGTH = 0.4f;
+const float MoveHandles::HANDLE_SCALE = 0.01f;
+const float MoveHandles::HANDLE_LENGTH = 0.2f;
 
 void MoveHandles::setupHandles() {
+
+    Ogre::MaterialPtr baseMaterial = Ogre::MaterialManager::getSingleton().getByName("ColorMaterial");
+
+	// Create Red Material
+	Ogre::MaterialPtr redMaterial = baseMaterial->clone("RedMaterial");
+	redMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(1.0, 0.0, 0.0));
+
+	// Create Green Material
+	Ogre::MaterialPtr greenMaterial = baseMaterial->clone("GreenMaterial");
+	greenMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(0.0, 1.0, 0.0));
+
+	// Create Blue Material
+	Ogre::MaterialPtr blueMaterial = baseMaterial->clone("BlueMaterial");
+	blueMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(0.0, 0.0, 1.0));
+
     // Create main handle node
     mHandleNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 
@@ -16,7 +31,7 @@ void MoveHandles::setupHandles() {
     mXHandle->attachObject(xHandle);
     mXHandle->setScale(HANDLE_LENGTH, HANDLE_SCALE, HANDLE_SCALE);
     mXHandle->setPosition(HANDLE_LENGTH / 2, 0, 0);
-    xHandle->setMaterialName("Examples/Rockwall");
+    xHandle->setMaterial(redMaterial);
 
     // Create Y axis handle (green)
     Ogre::Entity* yHandle = mSceneMgr->createEntity("handle_y", Ogre::SceneManager::PT_CUBE);
@@ -24,7 +39,7 @@ void MoveHandles::setupHandles() {
     mYHandle->attachObject(yHandle);
     mYHandle->setScale(HANDLE_SCALE, HANDLE_LENGTH, HANDLE_SCALE);
     mYHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
-    yHandle->setMaterialName("Examples/Rockwall");
+    yHandle->setMaterial(greenMaterial);
 
     // Create Z axis handle (blue)
     Ogre::Entity* zHandle = mSceneMgr->createEntity("handle_z", Ogre::SceneManager::PT_CUBE);
@@ -32,7 +47,7 @@ void MoveHandles::setupHandles() {
     mZHandle->attachObject(zHandle);
     mZHandle->setScale(HANDLE_SCALE, HANDLE_SCALE, HANDLE_LENGTH);
     mZHandle->setPosition(0, 0, HANDLE_LENGTH / 2);
-    zHandle->setMaterialName("Examples/Rockwall");
+    zHandle->setMaterial(blueMaterial);
 }
 
 void MoveHandles::update() {

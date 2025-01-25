@@ -75,6 +75,16 @@ public:
         if (m_CameraNode) {
             Ogre::Vector2 diff = currentPos - m_LastMousePos;
 
+            if (m_IsRotating && evt.type & OgreBites::BUTTON_RIGHT) {
+                // Yaw (left/right rotation) with horizontal mouse movement
+                float yawAngle = -diff.x * 180.0f; // Adjust sensitivity as needed
+                m_CameraNode->yaw(Ogre::Degree(yawAngle));
+
+                // Pitch (up/down rotation) with vertical mouse movement
+                float pitchAngle = -diff.y * 180.0f; // Adjust sensitivity as needed
+                m_CameraNode->pitch(Ogre::Degree(pitchAngle));
+            }
+
             // Pan camera with middle mouse button
             if (m_IsCameraMoving && evt.type & OgreBites::BUTTON_MIDDLE) {
                 float dx = diff.x * m_CameraDistance * 2.0f;
@@ -84,28 +94,6 @@ public:
                 Ogre::Vector3 up = m_CameraNode->getOrientation() * Ogre::Vector3::UNIT_Y;
 
                 m_CameraNode->translate(right * -dx + up * dy);
-            }
-            // Rotate camera with right mouse button
-            else if (m_IsRotating && evt.type & OgreBites::BUTTON_RIGHT) {
-                float rotX = diff.x * 180.0f;
-                float rotY = diff.y * 180.0f;
-
-                // Get current camera position
-                Ogre::Vector3 currentPos = m_CameraNode->getPosition();
-
-                // Rotate around Y axis (horizontal mouse movement)
-                Ogre::Quaternion yawRot(Ogre::Degree(-rotX), Ogre::Vector3::UNIT_Y);
-                Ogre::Vector3 rotatedPos = yawRot * (currentPos - m_RotationCenter) + m_RotationCenter;
-                m_CameraNode->setPosition(rotatedPos);
-
-                // Rotate around local X axis (vertical mouse movement)
-                Ogre::Vector3 right = m_CameraNode->getOrientation() * Ogre::Vector3::UNIT_X;
-                Ogre::Quaternion pitchRot(Ogre::Degree(-rotY), right);
-                rotatedPos = pitchRot * (m_CameraNode->getPosition() - m_RotationCenter) + m_RotationCenter;
-                m_CameraNode->setPosition(rotatedPos);
-
-                // Update camera orientation
-                m_CameraNode->lookAt(m_RotationCenter, Ogre::Node::TS_WORLD);
             }
         }
 
@@ -185,4 +173,5 @@ private:
     bool m_IsCameraMoving;
     bool m_IsRotating;
     Ogre::Vector3 m_RotationCenter;
+    bool m_WasRotatingLastFrame;
 };

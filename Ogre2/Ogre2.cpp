@@ -10,6 +10,10 @@
 #include <LinearMath/btDefaultMotionState.h>
 
 #include "CustomInput.h"
+/*
+#include "OgreImGuiOverlay.h"
+#include "imgui.h"
+*/
 
 class CustomApplicationContext : public OgreBites::ApplicationContext
 {
@@ -69,13 +73,6 @@ protected:
 
         // Attach the camera to the viewport
         getRenderWindow()->addViewport(cam);
-
-        // Create the "Sinbad.mesh" entity and attach it to a scene node
-        /*
-        Ogre::Entity* ent = scnMgr->createEntity("Sinbad.mesh");
-        Ogre::SceneNode* node = scnMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(ent);
-        */
 
         Ogre::Entity* bx = scnMgr->createEntity(Ogre::SceneManager::PT_SPHERE);
         bn = scnMgr->getRootSceneNode()->createChildSceneNode("bx");
