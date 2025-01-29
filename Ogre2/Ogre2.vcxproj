@@ -125,14 +125,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\ioann\Bin\ogre\include\OGRE;C:\Users\ioann\Bin\ogre\include\OGRE\Bites;C:\Users\ioann\Bin\ogre\include;C:\Users\ioann\Bin\ogre\include\OGRE\Overlay;C:\Users\ioann\Bin\ogre\include\OGRE\RTShaderSystem;C:\Users\ioann\Desktop\vcpkg\packages\bullet3_x64-windows\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bites;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bullet;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\MeshLodGenerator;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Overlay;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Paging;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\RTShaderSystem;C:\Users\ioann\Bin\ogre\include\OGRE\RenderSystems;C:\Users\ioann\Desktop\14.3.2.ogre\ogre\OgreMain\src;C:\Users\ioann\Desktop\vcpkg\packages\bullet3_x64-windows\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:\Users\ioann\Bin\ogre\lib\OgreMain.lib;C:\Users\ioann\Bin\ogre\lib\OgreRTShaderSystem.lib;C:\Users\ioann\Bin\ogre\lib\OgreBites.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreBites.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreMain.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreRTShaderSystem.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreMeshLodGenerator.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreOverlay.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgrePaging.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreProperty.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreTerrain.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreVolume.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\ioann\Bin\ogre\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

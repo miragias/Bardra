@@ -1,6 +1,6 @@
 #include <Ogre.h>
-#include <Bites/OgreApplicationContext.h>
-#include <RTShaderSystem/OgreShaderGenerator.h>
+#include <OgreApplicationContext.h>
+#include <OgreShaderGenerator.h>
 
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <BulletCollision/CollisionShapes/btBoxShape.h>
@@ -9,13 +9,16 @@
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
+#include <imgui.h>
+#include <OgreImGuiOverlay.h>
+#include <OgreOverlaySystem.h>
+#include <OgreOverlayManager.h>
+#include <OgreImGuiInputListener.h>
+#include "MoveHandles.h"
 #include "CustomInput.h"
-/*
-#include "OgreImGuiOverlay.h"
-#include "imgui.h"
-*/
 
-class CustomApplicationContext : public OgreBites::ApplicationContext
+
+class CustomApplicationContext : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
 public:
     CustomApplicationContext(const Ogre::String& appName) : OgreBites::ApplicationContext(appName) {}
@@ -26,6 +29,8 @@ public:
     Ogre::Camera* Camera;
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
+    Ogre::ImGuiOverlay* ov;
+
 
 private:
     MoveHandles* m_MoveHandles;
@@ -79,6 +84,25 @@ protected:
         bn->attachObject(bx);
         bn->setScale(0.1f, 0.1f, 0.1f); // Adjust scale
         bx->setMaterialName("Examples/Rockwall"); // Assign a material
+
+
+        //imgui
+        auto imguiOverlay = initialiseImGui();
+        ov = imguiOverlay;
+
+        //Add the input listeners
+        addInputListener(this);
+        addInputListener(getImGuiInputListener());
+
+        //ImGui::CreateContext();
+        float vpScale = Ogre::OverlayManager::getSingleton().getPixelRatio();
+        ImGui::GetIO().FontGlobalScale = std::round(vpScale); // default font does not work with fractional scaling
+
+        imguiOverlay->setZOrder(300);
+        imguiOverlay->show();
+        imguiOverlay->NewFrame();
+        scnMgr->addRenderQueueListener(mOverlaySystem);
+
 
         initBulletPhysics(scnMgr);
 
@@ -137,6 +161,12 @@ protected:
         if (m_MoveHandles) {
             m_MoveHandles->update();
         }
+
+        //Imgui
+        ov->NewFrame();
+        ImGui::ShowDemoWindow();
+        return true;
+
 
         return true;
     }
