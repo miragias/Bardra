@@ -11,7 +11,7 @@
 class CustomInput : public OgreBites::InputListener
 {
 public:
-    CustomInput(OgreBites::ApplicationContext* ctx, Ogre::SceneNode* currentlySelectedNode, std::vector<Ogre::SceneNode*> world)
+    CustomInput(OgreBites::ApplicationContext* ctx, Ogre::SceneNode** currentlySelectedNode, std::vector<Ogre::SceneNode*> world)
         : m_Ctx(ctx)
         , m_MoveHandles(nullptr)
         , m_World(world)
@@ -161,8 +161,7 @@ public:
         // If a closest node was found, you can change the selection
         if (closestNode) 
         {
-            m_CurrentlySelectedNode = closestNode;
-            std::cout << "Change currently selected to: " << m_CurrentlySelectedNode->getName() << "\n";
+            (*m_CurrentlySelectedNode) = closestNode;
         }
     }
 
@@ -204,7 +203,7 @@ private:
     MoveHandles* m_MoveHandles;
     Ogre::Camera* m_Camera;
     Ogre::SceneNode* m_CameraNode;
-    Ogre::SceneNode* m_CurrentlySelectedNode;
+    Ogre::SceneNode** m_CurrentlySelectedNode;
     Ogre::SceneManager* m_SceneMgr;
     Ogre::Vector2 m_LastMousePos;
     std::vector<Ogre::SceneNode*> m_World;

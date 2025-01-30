@@ -52,7 +52,7 @@ void MoveHandles::setupHandles() {
 
 void MoveHandles::update() {
     if (mTargetNode) {
-        mHandleNode->setPosition(mTargetNode->getPosition());
+        mHandleNode->setPosition((*mTargetNode)->getPosition());
     }
 }
 
@@ -117,7 +117,7 @@ bool MoveHandles::mousePressed(const Ogre::Vector2& mousePos) {
         planeNormal = planeNormal.crossProduct(moveDir);
         planeNormal.normalise();
 
-        Ogre::Plane dragPlane(planeNormal, mTargetNode->getPosition());
+        Ogre::Plane dragPlane(planeNormal, (*mTargetNode)->getPosition());
         mLastMousePos = getMouseWorldPos(mousePos, dragPlane);
 
         return true;
@@ -145,7 +145,7 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
     planeNormal = planeNormal.crossProduct(moveDir);
     planeNormal.normalise();
 
-    Ogre::Plane dragPlane(planeNormal, mTargetNode->getPosition());
+    Ogre::Plane dragPlane(planeNormal, (*mTargetNode)->getPosition());
     Ogre::Vector3 currentPos = getMouseWorldPos(mousePos, dragPlane);
 
     if (currentPos != Ogre::Vector3::ZERO) {
@@ -171,7 +171,7 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
             mPhysicsBody->activate(true);
         }
         else{
-            mTargetNode->setPosition(mTargetNode->getPosition() + movement);
+            (*mTargetNode)->setPosition((*mTargetNode)->getPosition() + movement);
         }
         mLastMousePos = currentPos;
     }

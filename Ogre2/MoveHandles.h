@@ -4,7 +4,7 @@
 
 class MoveHandles {
 public:
-    MoveHandles(Ogre::SceneManager* sceneMgr, Ogre::SceneNode* targetNode, Ogre::Camera* camera, btRigidBody* physicsBody)
+    MoveHandles(Ogre::SceneManager* sceneMgr, Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody)
         : mSceneMgr(sceneMgr)
         , mTargetNode(targetNode)
         , mCamera(camera)
@@ -34,7 +34,7 @@ private:
     Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane);
 
     Ogre::SceneManager* mSceneMgr;
-    Ogre::SceneNode* mTargetNode;
+    Ogre::SceneNode** mTargetNode;
     Ogre::Camera* mCamera;
 
     Ogre::SceneNode* mHandleNode;

@@ -30,7 +30,7 @@ public:
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
     Ogre::ImGuiOverlay* ov;
-    Ogre::SceneNode* m_CurrentlySelectedNode;
+    Ogre::SceneNode** m_CurrentlySelectedNode;
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
 
 private:
@@ -84,7 +84,7 @@ protected:
         auto s1 = CreateEntity("S1");
         auto s2 = CreateEntity("S2");
 
-        m_CurrentlySelectedNode = s1;
+        m_CurrentlySelectedNode = &s1;
         s2->setPosition(100, 0, 0);
 
         //imgui
