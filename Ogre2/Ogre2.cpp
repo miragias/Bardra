@@ -30,12 +30,12 @@ public:
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
     Ogre::ImGuiOverlay* ov;
+    Ogre::SceneNode* m_CurrentlySelectedNode;
+    std::vector<Ogre::SceneNode*> m_ObjectNodes;
 
 private:
     MoveHandles* m_MoveHandles;
-    std::vector<Ogre::SceneNode*> m_ObjectNodes;
 	int sliderValue = 0; // Variable to store the slider value
-
 
 protected:
     void setup() override
@@ -83,6 +83,8 @@ protected:
 
         auto s1 = CreateEntity("S1");
         auto s2 = CreateEntity("S2");
+
+        m_CurrentlySelectedNode = s1;
         s2->setPosition(100, 0, 0);
 
         //imgui
@@ -103,7 +105,7 @@ protected:
 
         initBulletPhysics(scnMgr);
 
-        m_MoveHandles = new MoveHandles(scnMgr, s1, cam, boxRigidBody);
+        m_MoveHandles = new MoveHandles(scnMgr, m_CurrentlySelectedNode, cam, boxRigidBody);
     }
 
     Ogre::SceneNode* CreateEntity(const std::string name)
@@ -207,7 +209,7 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
-    CustomInput* input = new CustomInput(&ctx);
+    CustomInput* input = new CustomInput(&ctx, ctx.m_CurrentlySelectedNode, ctx.m_ObjectNodes);
     input->setMoveHandles(ctx.getMoveHandles());
     input->setCamera(ctx.Camera, ctx.CamNode, ctx.SceneManager);
     ctx.addInputListener(input);

@@ -6,13 +6,16 @@
 #include <OgreSceneQuery.h>
 #include <iostream>
 #include "MoveHandles.h"
+#include <LinearMath/btVector3.h>
 
 class CustomInput : public OgreBites::InputListener
 {
 public:
-    CustomInput(OgreBites::ApplicationContext* ctx)
+    CustomInput(OgreBites::ApplicationContext* ctx, Ogre::SceneNode* currentlySelectedNode, std::vector<Ogre::SceneNode*> world)
         : m_Ctx(ctx)
         , m_MoveHandles(nullptr)
+        , m_World(world)
+        , m_CurrentlySelectedNode(currentlySelectedNode)
         , m_Camera(nullptr)
         , m_CameraNode(nullptr)
         , m_LastMousePos(Ogre::Vector2::ZERO)
@@ -112,6 +115,7 @@ public:
             evt.y / float(window->getHeight())
         );
 
+        checkAllNodesToChangeCurrentlySelected(m_LastMousePos);
         if (evt.button == OgreBites::BUTTON_MIDDLE) {
             m_IsCameraMoving = true;
             return true;
@@ -127,6 +131,39 @@ public:
             return m_MoveHandles->mousePressed(m_LastMousePos);
         }
         return true;
+    }
+
+    void checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos) 
+    {
+		Ogre::Ray mouseRay = m_Camera->getCameraToViewportRay(
+			mousePos.x,
+			mousePos.y
+		);
+
+        float minDistance = std::numeric_limits<float>::infinity();
+        Ogre::SceneNode* closestNode = nullptr;
+
+        for (size_t i = 0; i < m_World.size(); i++)
+        {
+            auto iter = m_World[i];
+            // Check if the ray intersects the object's AABB
+            std::pair<bool, float> intersect = mouseRay.intersects(iter->_getWorldAABB());
+            if (intersect.first) 
+            {
+                if (intersect.second < minDistance) 
+                {
+                    minDistance = intersect.second;
+                    closestNode = iter;
+                }
+            }
+		 }
+
+        // If a closest node was found, you can change the selection
+        if (closestNode) 
+        {
+            m_CurrentlySelectedNode = closestNode;
+            std::cout << "Change currently selected to: " << m_CurrentlySelectedNode->getName() << "\n";
+        }
     }
 
     bool mouseReleased(const OgreBites::MouseButtonEvent& evt) override {
@@ -167,8 +204,10 @@ private:
     MoveHandles* m_MoveHandles;
     Ogre::Camera* m_Camera;
     Ogre::SceneNode* m_CameraNode;
+    Ogre::SceneNode* m_CurrentlySelectedNode;
     Ogre::SceneManager* m_SceneMgr;
     Ogre::Vector2 m_LastMousePos;
+    std::vector<Ogre::SceneNode*> m_World;
     float m_CameraDistance;
     bool m_IsCameraMoving;
     bool m_IsRotating;
