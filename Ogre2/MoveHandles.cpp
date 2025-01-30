@@ -154,7 +154,6 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
         Ogre::Vector3 movement = moveDir * projection;
 
         // Update physics body position
-        /*
         if (mPhysicsBody) {
             btTransform trans;
             mPhysicsBody->getMotionState()->getWorldTransform(trans);
@@ -171,8 +170,9 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
             // Optionally, you might want to activate the body
             mPhysicsBody->activate(true);
         }
-        */
-
+        else{
+            mTargetNode->setPosition(mTargetNode->getPosition() + movement);
+        }
         mLastMousePos = currentPos;
     }
 }
