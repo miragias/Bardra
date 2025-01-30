@@ -3,8 +3,8 @@
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
-const float MoveHandles::HANDLE_SCALE = 0.01f;
-const float MoveHandles::HANDLE_LENGTH = 0.2f;
+const float MoveHandles::HANDLE_SCALE = 0.02f;
+const float MoveHandles::HANDLE_LENGTH = 1.5f;
 
 void MoveHandles::setupHandles() {
 
@@ -12,15 +12,15 @@ void MoveHandles::setupHandles() {
 
 	// Create Red Material
 	Ogre::MaterialPtr redMaterial = baseMaterial->clone("RedMaterial");
-	redMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(1.0, 0.0, 0.0));
+	redMaterial->getTechnique(0)->getPass(0)->setEmissive(Ogre::ColourValue(1.0, 0.0, 0.0));
 
 	// Create Green Material
 	Ogre::MaterialPtr greenMaterial = baseMaterial->clone("GreenMaterial");
-	greenMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(0.0, 1.0, 0.0));
+	greenMaterial->getTechnique(0)->getPass(0)->setEmissive(Ogre::ColourValue(0.0, 1.0, 0.0));
 
 	// Create Blue Material
 	Ogre::MaterialPtr blueMaterial = baseMaterial->clone("BlueMaterial");
-	blueMaterial->getTechnique(0)->getPass(0)->setDiffuse(Ogre::ColourValue(0.0, 0.0, 1.0));
+	blueMaterial->getTechnique(0)->getPass(0)->setEmissive(Ogre::ColourValue(0.0, 0.0, 1.0));
 
     // Create main handle node
     mHandleNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -154,6 +154,7 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
         Ogre::Vector3 movement = moveDir * projection;
 
         // Update physics body position
+        /*
         if (mPhysicsBody) {
             btTransform trans;
             mPhysicsBody->getMotionState()->getWorldTransform(trans);
@@ -170,6 +171,7 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
             // Optionally, you might want to activate the body
             mPhysicsBody->activate(true);
         }
+        */
 
         mLastMousePos = currentPos;
     }

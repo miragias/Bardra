@@ -22,18 +22,19 @@ class CustomApplicationContext : public OgreBites::ApplicationContext, public Og
 {
 public:
     CustomApplicationContext(const Ogre::String& appName) : OgreBites::ApplicationContext(appName) {}
+
     btDiscreteDynamicsWorld* dynamicsWorld;
     btRigidBody* boxRigidBody;
-    Ogre::SceneNode* bn;
     MoveHandles* getMoveHandles() { return m_MoveHandles; }
     Ogre::Camera* Camera;
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
     Ogre::ImGuiOverlay* ov;
 
-
 private:
     MoveHandles* m_MoveHandles;
+    std::vector<Ogre::SceneNode*> m_ObjectNodes;
+	int sliderValue = 0; // Variable to store the slider value
 
 
 protected:
@@ -75,16 +76,14 @@ protected:
         cam->setNearClipDistance(5);  // Adjust camera near clip distance
         cam->setAutoAspectRatio(true);  // Automatically adjust aspect ratio based on window size
         camNode->attachObject(cam);
+        camNode->setPosition(0, 0, -10);
 
         // Attach the camera to the viewport
         getRenderWindow()->addViewport(cam);
 
-        Ogre::Entity* bx = scnMgr->createEntity(Ogre::SceneManager::PT_SPHERE);
-        bn = scnMgr->getRootSceneNode()->createChildSceneNode("bx");
-        bn->attachObject(bx);
-        bn->setScale(0.1f, 0.1f, 0.1f); // Adjust scale
-        bx->setMaterialName("Examples/Rockwall"); // Assign a material
-
+        auto s1 = CreateEntity("S1");
+        auto s2 = CreateEntity("S2");
+        s2->setPosition(100, 0, 0);
 
         //imgui
         auto imguiOverlay = initialiseImGui();
@@ -94,7 +93,6 @@ protected:
         addInputListener(this);
         addInputListener(getImGuiInputListener());
 
-        //ImGui::CreateContext();
         float vpScale = Ogre::OverlayManager::getSingleton().getPixelRatio();
         ImGui::GetIO().FontGlobalScale = std::round(vpScale); // default font does not work with fractional scaling
 
@@ -103,14 +101,30 @@ protected:
         imguiOverlay->NewFrame();
         scnMgr->addRenderQueueListener(mOverlaySystem);
 
-
         initBulletPhysics(scnMgr);
 
-        m_MoveHandles = new MoveHandles(scnMgr, bn, cam, boxRigidBody);
+        m_MoveHandles = new MoveHandles(scnMgr, s1, cam, boxRigidBody);
+    }
+
+    Ogre::SceneNode* CreateEntity(const std::string name)
+    {
+        //TODO(JohnMir): Check if same name passed to fix this
+        Ogre::SceneNode* node = SceneManager->getRootSceneNode()->createChildSceneNode(name);
+        Ogre::Entity* entity = SceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
+
+        node->attachObject(entity);
+        node->setScale(1,1,1);
+
+        //TODO:
+        entity->setMaterialName("Examples/Rockwall");
+
+        m_ObjectNodes.push_back(node);
+        return node;
     }
 
     void initBulletPhysics(Ogre::SceneManager* scnMgr)
     {
+        /*
         // 2. Bullet physics setup
         btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
         btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
@@ -136,6 +150,7 @@ protected:
         btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(mass, boxMotionState, boxShape, boxInertia);
         boxRigidBody = new btRigidBody(boxRigidBodyCI);
         dynamicsWorld->addRigidBody(boxRigidBody);
+        */
 
         /*
         Ogre::Entity* boxEntity = scnMgr->createEntity(Ogre::SceneManager::PT_CUBE);
@@ -145,7 +160,17 @@ protected:
         */
     }
 
+    void ShowSliderExample()
+    {
+        ImGui::Begin("Slider Example"); // Create a new window
+        ImGui::SliderInt("Adjust Value", &sliderValue, -50, 50); // Create slider
+        ImGui::Text("Current Value: %d", sliderValue); // Display value
+        ImGui::End(); // End window
+    }
+
+
     bool frameRenderingQueued(const Ogre::FrameEvent& evt) override {
+        /*
         // Simulate physics
         dynamicsWorld->stepSimulation(evt.timeSinceLastFrame, 10);
 
@@ -156,18 +181,18 @@ protected:
 
         // Update Ogre node position
         bn->setPosition(Ogre::Vector3(pos.getX(), pos.getY(), pos.getZ()));
+        */
 
         // Update move handles
-        if (m_MoveHandles) {
+        if (m_MoveHandles) 
+        {
             m_MoveHandles->update();
         }
 
         //Imgui
         ov->NewFrame();
         ImGui::ShowDemoWindow();
-        return true;
-
-
+        ShowSliderExample();
         return true;
     }
 
