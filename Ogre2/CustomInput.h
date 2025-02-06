@@ -38,6 +38,36 @@ public:
 
     void setMoveHandles(MoveHandles* handles) { m_MoveHandles = handles; }
 
+    void focusNextObject() {
+        if (m_World.empty()) return;
+
+        // Increment index and wrap around
+        m_CurrentFocusIndex = (m_CurrentFocusIndex + 1) % m_World.size();
+
+        // Get the next object to focus on
+        Ogre::SceneNode* targetNode = m_World[m_CurrentFocusIndex];
+
+        // Get the center position of the object
+        Ogre::Vector3 objectCenter = targetNode->_getDerivedPosition();
+
+        // Calculate the desired camera position
+        // Move back by m_CameraDistance units along the current view direction
+        Ogre::Vector3 viewDirection = m_CameraNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+        Ogre::Vector3 newCameraPosition = objectCenter - (viewDirection * m_CameraDistance);
+
+        // Smoothly move the camera to the new position
+        m_CameraNode->setPosition(newCameraPosition);
+
+        // Make the camera look at the object
+        m_CameraNode->lookAt(objectCenter, Ogre::Node::TS_WORLD);
+
+        // Update the rotation center for orbital rotation
+        m_RotationCenter = objectCenter;
+
+        // Update the currently selected node
+        *m_CurrentlySelectedNode = targetNode;
+    }
+
     Ogre::Vector3 getPointOnGround(float screenX, float screenY) {
         Ogre::RenderWindow* window = m_Ctx->getRenderWindow();
 
@@ -63,6 +93,11 @@ public:
     bool keyPressed(const OgreBites::KeyboardEvent& evt) override {
         if (evt.keysym.sym == 27) { //Escape key
             m_Ctx->closeApp();
+            return true;
+        }
+
+        if (evt.keysym.sym == '\t') { // Tab key
+            focusNextObject();
             return true;
         }
         return false;
@@ -212,4 +247,6 @@ private:
     bool m_IsRotating;
     Ogre::Vector3 m_RotationCenter;
     bool m_WasRotatingLastFrame;
+    size_t m_CurrentFocusIndex = 0;
+
 };

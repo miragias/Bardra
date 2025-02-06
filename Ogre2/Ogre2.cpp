@@ -36,6 +36,7 @@ public:
 private:
     MoveHandles* m_MoveHandles;
 	int sliderValue = 0; // Variable to store the slider value
+	float quadSize = 4;
 
 protected:
     void setup() override
@@ -50,14 +51,6 @@ protected:
         // Register the scene with the RTSS (Real-Time Shader System)
         Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
         shadergen->addSceneManager(scnMgr);
-
-        // Create a light source
-        /*
-        Ogre::Light* light = scnMgr->createLight("MainLight");
-        Ogre::SceneNode* lightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-        lightNode->setPosition(0, 10, 15);  // Position light
-        lightNode->attachObject(light);
-        */
 
         scnMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f)); // Add ambient light
         Ogre::Light* light = scnMgr->createLight("MainLight");
@@ -106,6 +99,57 @@ protected:
         initBulletPhysics(scnMgr);
 
         m_MoveHandles = new MoveHandles(scnMgr, m_CurrentlySelectedNode, cam, boxRigidBody);
+        createMaterialWithTexture();
+        createTexturedQuad(scnMgr);
+    }
+
+    void createTexturedQuad(Ogre::SceneManager* sceneMgr)
+    {
+        Ogre::ManualObject* manual = sceneMgr->createManualObject("Quad");
+        manual->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+
+        // Define the four vertices (position and texture coordinates)
+        manual->position(-quadSize, quadSize, 0);  // Top-left
+        manual->textureCoord(0, 0);
+
+        manual->position(quadSize, quadSize, 0);  // Top-right
+        manual->textureCoord(1, 0);
+
+        manual->position(-quadSize, -quadSize, 0);  // Bottom-left
+        manual->textureCoord(0, 1);
+
+        manual->position(quadSize, -quadSize, 0);  // Bottom-right
+        manual->textureCoord(1, 1);
+
+        // Define the quad using a triangle strip
+        manual->index(0);
+        manual->index(1);
+        manual->index(2);
+        manual->index(3);
+
+        manual->end();
+
+        // Convert to mesh
+        Ogre::MeshPtr mesh = manual->convertToMesh("QuadMesh");
+
+        // Create an entity and attach it to a node
+        Ogre::Entity* entity = sceneMgr->createEntity("QuadEntity", "QuadMesh");
+        Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        node->attachObject(entity);
+        m_ObjectNodes.push_back(node);
+    }
+
+    void createMaterialWithTexture()
+    {
+        Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create(
+            "Hey", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+        Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
+        pass->setCullingMode(Ogre::CULL_NONE);
+        Ogre::TextureUnitState* texUnit = pass->createTextureUnitState("nm_bk.png");
+
+        // Set material to use lighting (optional)
+        material->setLightingEnabled(false);
     }
 
     Ogre::SceneNode* CreateEntity(const std::string name)
@@ -166,6 +210,7 @@ protected:
     {
         ImGui::Begin("Slider Example"); // Create a new window
         ImGui::SliderInt("Adjust Value", &sliderValue, -50, 50); // Create slider
+        ImGui::SliderFloat("Quad Size", &quadSize, -50, 50); // Create slider
         ImGui::Text("Current Value: %d", sliderValue); // Display value
         ImGui::End(); // End window
     }
