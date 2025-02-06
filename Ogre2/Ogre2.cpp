@@ -18,6 +18,17 @@
 #include "CustomInput.h"
 
 
+struct TimelineEvent {
+    std::string label;
+    float start_time; // Start time in seconds
+    float duration;   // Duration in seconds
+};
+
+struct Timeline {
+    float current_time = 0.0f; // Current playhead position
+    float zoom = 1.0f; // Zoom level (1.0 = normal, >1 = zoom in, <1 = zoom out)
+};
+
 class CustomApplicationContext : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
 public:
@@ -38,10 +49,17 @@ private:
     MoveHandles* m_MoveHandles;
 	int sliderValue = 0; // Variable to store the slider value
 	float quadSize = 4.0f;
+    std::vector<TimelineEvent> events;
+    Timeline timeline;
 
 protected:
     void setup() override
     {
+        events = {};
+
+        Timeline timeline = { 2.0f, 1.0f };
+
+
         // Call the base class setup
         OgreBites::ApplicationContext::setup();
 
@@ -274,8 +292,50 @@ protected:
         }
         ImGui::Text("Current Value: %d", sliderValue); // Display value
         ImGui::End(); // End window
-    }
+        ImGui::Begin("Timeline");
 
+        ImVec2 canvas_pos = ImGui::GetCursorScreenPos();
+        ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 150);
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+        float timeline_length = canvas_size.x * timeline.zoom;
+        float y_mid = canvas_pos.y + canvas_size.y / 2;
+
+        // Draw timeline background
+        ImGui::InvisibleButton("##timeline_button", canvas_size);
+        bool is_hovered = ImGui::IsItemHovered();
+        bool is_clicked = ImGui::IsItemClicked();
+
+        draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), IM_COL32(50, 50, 50, 255));
+
+        // Draw time divisions (short and long lines)
+        for (int i = 0; i <= 100; ++i) { // Increase division count for finer granularity
+            float x = canvas_pos.x + (i / 100.0f) * timeline_length;
+            float height = (i % 10 == 0) ? 15.0f : ((i % 5 == 0) ? 10.0f : 5.0f); // Different heights for major, minor, and tiny divisions
+            draw_list->AddLine(ImVec2(x, y_mid - height), ImVec2(x, y_mid + height), IM_COL32(200, 200, 200, 255), 1.5f);
+        }
+
+        // Handle playhead movement on click
+        if (is_clicked) {
+            ImVec2 mouse_pos = ImGui::GetMousePos();
+            timeline.current_time = ((mouse_pos.x - canvas_pos.x) / timeline_length) * 10.0f; // Adjusted for 10 sec range
+        }
+
+        // Draw playhead (red vertical line)
+        float playhead_x = canvas_pos.x + (timeline.current_time / 10.0f) * timeline_length;
+        draw_list->AddLine(ImVec2(playhead_x, canvas_pos.y), ImVec2(playhead_x, canvas_pos.y + canvas_size.y), IM_COL32(255, 0, 0, 255), 2.0f);
+
+        // Draw events (blocks on the timeline)
+        for (const auto& event : events) {
+            float start_x = canvas_pos.x + (event.start_time / 10.0f) * timeline_length;
+            float end_x = start_x + (event.duration / 10.0f) * timeline_length;
+            draw_list->AddRectFilled(ImVec2(start_x, y_mid - 10), ImVec2(end_x, y_mid + 10), IM_COL32(0, 255, 0, 255));
+            ImGui::SetCursorScreenPos(ImVec2(start_x, y_mid + 15));
+            ImGui::Text("%s", event.label.c_str());
+        }
+
+        ImGui::End();
+    }
 
     bool frameRenderingQueued(const Ogre::FrameEvent& evt) override {
         /*
@@ -303,6 +363,12 @@ protected:
         ShowSliderExample();
         return true;
     }
+
+    struct TimelineEvent {
+        std::string label;
+        float time; // Time in range [0,1] representing position on timeline
+    };
+
 
     OgreBites::NativeWindowPair createWindow(const Ogre::String& name, uint32_t w = 0, uint32_t h = 0,
         Ogre::NameValuePairList miscParams = Ogre::NameValuePairList()) override
