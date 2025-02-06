@@ -34,9 +34,10 @@ public:
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
 
 private:
+    Ogre::ManualObject* manual;
     MoveHandles* m_MoveHandles;
 	int sliderValue = 0; // Variable to store the slider value
-	float quadSize = 4;
+	float quadSize = 4.0f;
 
 protected:
     void setup() override
@@ -103,40 +104,50 @@ protected:
         createTexturedQuad(scnMgr);
     }
 
+    std::vector<Ogre::Vector3> vertices;
+
     void createTexturedQuad(Ogre::SceneManager* sceneMgr)
     {
-        Ogre::ManualObject* manual = sceneMgr->createManualObject("Quad");
+        manual = sceneMgr->createManualObject("Quad");
+
+        updateQuad();  // Build the quad initially
+
+        // Create a scene node and attach the manual object
+        Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
+        node->attachObject(manual);
+        m_ObjectNodes.push_back(node);
+    }
+
+    void UpdateVertices() 
+    {
+        // Store initial vertex positions
+        vertices = {
+            {-quadSize, quadSize, 0},   // Top-left
+            {quadSize, quadSize, 0},    // Top-right
+            {-quadSize, -quadSize, 0},  // Bottom-left
+            {quadSize, -quadSize, 0}    // Bottom-right
+        };
+    }
+
+    void updateQuad()
+    {
+        UpdateVertices();
+        manual->clear();  // Clear the previous shape
+
         manual->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
 
-        // Define the four vertices (position and texture coordinates)
-        manual->position(-quadSize, quadSize, 0);  // Top-left
-        manual->textureCoord(0, 0);
+        for (int i = 0; i < 4; i++) {
+            manual->position(vertices[i]);   // Use updated vertex positions
+            manual->textureCoord(i % 2, i / 2);
+        }
 
-        manual->position(quadSize, quadSize, 0);  // Top-right
-        manual->textureCoord(1, 0);
-
-        manual->position(-quadSize, -quadSize, 0);  // Bottom-left
-        manual->textureCoord(0, 1);
-
-        manual->position(quadSize, -quadSize, 0);  // Bottom-right
-        manual->textureCoord(1, 1);
-
-        // Define the quad using a triangle strip
+        // Recreate the quad indices
         manual->index(0);
         manual->index(1);
         manual->index(2);
         manual->index(3);
 
         manual->end();
-
-        // Convert to mesh
-        Ogre::MeshPtr mesh = manual->convertToMesh("QuadMesh");
-
-        // Create an entity and attach it to a node
-        Ogre::Entity* entity = sceneMgr->createEntity("QuadEntity", "QuadMesh");
-        Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-        node->attachObject(entity);
-        m_ObjectNodes.push_back(node);
     }
 
     void createMaterialWithTexture()
@@ -206,11 +217,61 @@ protected:
         */
     }
 
+    void updateVertices(const Ogre::Vector3& topLeft = Ogre::Vector3(-1, 1, 0),
+        const Ogre::Vector3& topRight = Ogre::Vector3(1, 1, 0),
+        const Ogre::Vector3& bottomLeft = Ogre::Vector3(-1, -1, 0),
+        const Ogre::Vector3& bottomRight = Ogre::Vector3(1, -1, 0))
+    {
+        std::cout << topLeft;
+        manual->beginUpdate(0);
+
+        // Front face vertices
+        manual->position(topLeft);
+        manual->textureCoord(0, 0);
+        manual->position(topRight);
+        manual->textureCoord(1, 0);
+        manual->position(bottomLeft);
+        manual->textureCoord(0, 1);
+        manual->position(bottomRight);
+        manual->textureCoord(1, 1);
+
+        // Back face vertices
+        manual->position(topLeft);
+        manual->textureCoord(0, 0);
+        manual->position(bottomLeft);
+        manual->textureCoord(0, 1);
+        manual->position(topRight);
+        manual->textureCoord(1, 0);
+        manual->position(bottomRight);
+        manual->textureCoord(1, 1);
+
+        // Front face indices
+        manual->index(0);
+        manual->index(1);
+        manual->index(2);
+        manual->index(2);
+        manual->index(1);
+        manual->index(3);
+
+        // Back face indices
+        manual->index(4);
+        manual->index(5);
+        manual->index(6);
+        manual->index(6);
+        manual->index(5);
+        manual->index(7);
+
+        manual->end();
+    }
+
     void ShowSliderExample()
     {
         ImGui::Begin("Slider Example"); // Create a new window
         ImGui::SliderInt("Adjust Value", &sliderValue, -50, 50); // Create slider
-        ImGui::SliderFloat("Quad Size", &quadSize, -50, 50); // Create slider
+        if (ImGui::SliderFloat("Quad Size", &quadSize, 0, 25)) 
+        {
+            updateQuad();
+        }
         ImGui::Text("Current Value: %d", sliderValue); // Display value
         ImGui::End(); // End window
     }
