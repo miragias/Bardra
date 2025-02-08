@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/Users/ioann/source/repos/Ogre2/build",
+  "command": "C:\\Users\\ioann\\scoop\\apps\\llvm\\current\\bin\\clang++.exe -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bites -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bullet -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/MeshLodGenerator -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Overlay -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Paging -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/RTShaderSystem -IC:/Users/ioann/Bin/ogre/include/OGRE/RenderSystems -IC:/Users/ioann/Desktop/14.3.2.ogre/ogre/OgreMain/src -IC:/Users/ioann/Desktop/vcpkg/packages/bullet3_x64-windows/include/bullet -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++14 -o CMakeFiles\\Ogre2Executable.dir\\Ogre2\\CustomInput.cpp.obj -c C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\CustomInput.cpp",
+  "file": "C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\CustomInput.cpp",
+  "output": "CMakeFiles\\Ogre2Executable.dir\\Ogre2\\CustomInput.cpp.obj"
+},
+{
+  "directory": "C:/Users/ioann/source/repos/Ogre2/build",
+  "command": "C:\\Users\\ioann\\scoop\\apps\\llvm\\current\\bin\\clang++.exe -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bites -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bullet -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/MeshLodGenerator -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Overlay -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Paging -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/RTShaderSystem -IC:/Users/ioann/Bin/ogre/include/OGRE/RenderSystems -IC:/Users/ioann/Desktop/14.3.2.ogre/ogre/OgreMain/src -IC:/Users/ioann/Desktop/vcpkg/packages/bullet3_x64-windows/include/bullet -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++14 -o CMakeFiles\\Ogre2Executable.dir\\Ogre2\\MoveHandles.cpp.obj -c C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\MoveHandles.cpp",
+  "file": "C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\MoveHandles.cpp",
+  "output": "CMakeFiles\\Ogre2Executable.dir\\Ogre2\\MoveHandles.cpp.obj"
+},
+{
+  "directory": "C:/Users/ioann/source/repos/Ogre2/build",
+  "command": "C:\\Users\\ioann\\scoop\\apps\\llvm\\current\\bin\\clang++.exe -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bites -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bullet -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/MeshLodGenerator -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Overlay -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Paging -IC:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/RTShaderSystem -IC:/Users/ioann/Bin/ogre/include/OGRE/RenderSystems -IC:/Users/ioann/Desktop/14.3.2.ogre/ogre/OgreMain/src -IC:/Users/ioann/Desktop/vcpkg/packages/bullet3_x64-windows/include/bullet -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++14 -o CMakeFiles\\Ogre2Executable.dir\\Ogre2\\Ogre2.cpp.obj -c C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\Ogre2.cpp",
+  "file": "C:\\Users\\ioann\\source\\repos\\Ogre2\\Ogre2\\Ogre2.cpp",
+  "output": "CMakeFiles\\Ogre2Executable.dir\\Ogre2\\Ogre2.cpp.obj"
+}
+]

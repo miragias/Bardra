@@ -1,6 +1,6 @@
 # Step 1: Build the solution
 Write-Host "Building the solution..."
-msbuild "C:\Users\ioann\source\repos\Ogre2\Ogre2.sln" /p:Configuration=Release
+msbuild "C:\Users\ioann\source\repos\Ogre2\Ogre2.sln" /p:Configuration=Release /p:TreatSpecificWarningsAsErrors="-C4251"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed. Exiting." -ForegroundColor Red

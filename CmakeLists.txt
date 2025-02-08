@@ -1,0 +1,52 @@
+# Set the minimum required version of CMake
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+cmake_minimum_required(VERSION 3.10)
+
+# Set the project name
+project(Ogre2Project)
+
+# Define the path to the include directories
+include_directories(
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bites"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Bullet"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/MeshLodGenerator"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Overlay"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/Paging"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/include/OGRE/RTShaderSystem"
+    "C:/Users/ioann/Bin/ogre/include/OGRE/RenderSystems"
+    "C:/Users/ioann/Desktop/14.3.2.ogre/ogre/OgreMain/src"
+    "C:/Users/ioann/Desktop/vcpkg/packages/bullet3_x64-windows/include/bullet"
+)
+
+# Define the path to the library directories
+link_directories(
+    "C:/Users/ioann/Bin/ogre/lib"
+    "C:/Users/ioann/Desktop/ogre-sdk-v14.3.2-msvc142-x64/lib"
+)
+
+# Use file(GLOB ...) to automatically include all .cpp files in the Ogre2 directory
+file(GLOB SOURCES "Ogre2/*.cpp")
+
+# Add the executable target
+add_executable(Ogre2Executable ${SOURCES})
+
+# Link the necessary libraries
+target_link_libraries(Ogre2Executable
+    OgreBites
+    OgreMain
+    OgreRTShaderSystem
+    OgreMeshLodGenerator
+    OgreOverlay
+    OgrePaging
+    OgreProperty
+    OgreTerrain
+    OgreVolume
+)
+
+# Optionally, specify the C++ standard
+set_target_properties(Ogre2Executable PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED YES
+)
