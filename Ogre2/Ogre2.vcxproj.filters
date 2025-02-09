@@ -32,5 +32,14 @@
     <ClInclude Include="MoveHandles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ogre2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

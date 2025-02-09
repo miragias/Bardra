@@ -76,7 +76,7 @@ MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
     if (yResult.first && yResult.second < closest_distance) {
         closest_distance = yResult.second;
         selected = Y;
-    }
+   }
 
     std::pair<bool, float> zResult = mouseRay.intersects(mZHandle->_getWorldAABB());
     if (zResult.first && zResult.second < closest_distance) {
@@ -173,6 +173,7 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
         else{
             (*mTargetNode)->setPosition((*mTargetNode)->getPosition() + movement);
         }
+        std::cout << currentPos;
         mLastMousePos = currentPos;
     }
 }
