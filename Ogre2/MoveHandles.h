@@ -4,7 +4,8 @@
 
 class MoveHandles {
 public:
-    MoveHandles(Ogre::SceneManager* sceneMgr, Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody)
+    MoveHandles(Ogre::SceneManager* sceneMgr,
+        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody)
         : mSceneMgr(sceneMgr)
         , mTargetNode(targetNode)
         , mCamera(camera)

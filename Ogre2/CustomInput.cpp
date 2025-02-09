@@ -13,6 +13,7 @@ CustomInput::CustomInput(CustomApplicationContext* ctx, Event<Ogre::SceneNode**>
     , m_RotationCenter(Ogre::Vector3::ZERO)
     , m_SceneMgr(ctx->SceneManager)
     , m_OnSelectionChanged(onSelectionChanged)
+    , m_World(ctx->GetWorld())
 {
     m_CameraNode->setPosition(0, 0, m_CameraDistance);
     m_CameraNode->lookAt(m_RotationCenter, Ogre::Node::TS_WORLD);
