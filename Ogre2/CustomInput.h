@@ -4,7 +4,6 @@
 #include <OgreCamera.h>
 #include <OgreRay.h>
 #include <OgreSceneQuery.h>
-#include <iostream>
 #include "MoveHandles.h"
 #include "Ogre2.h"
 #include <LinearMath/btVector3.h>
@@ -13,7 +12,7 @@
 class CustomInput : public OgreBites::InputListener
 {
 public:
-    CustomInput(CustomApplicationContext* ctx, Event<Ogre::SceneNode**> onSelectionChanged);
+    CustomInput(CustomApplicationContext* ctx);
 
     void focusNextObject();
     Ogre::Vector3 getPointOnGround(float screenX, float screenY);
@@ -40,5 +39,4 @@ private:
     Ogre::Vector3 m_RotationCenter;
     bool m_WasRotatingLastFrame;
     size_t m_CurrentFocusIndex = 0;
-    Event<Ogre::SceneNode**> m_OnSelectionChanged;
 };

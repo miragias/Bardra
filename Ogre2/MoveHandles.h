@@ -2,20 +2,24 @@
 #include <Ogre.h>
 #include <btBulletDynamicsCommon.h>
 #include "Common.h"
+#include "Events.h"
 
 class MoveHandles {
 public:
     MoveHandles(Ogre::SceneManager* sceneMgr,
-        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody, SelectionMode* currentSelectionmode)
+        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody,
+        SelectionMode* currentSelectionmode)
         : mSceneMgr(sceneMgr)
         , mTargetNode(targetNode)
         , mCamera(camera)
         , mPhysicsBody(physicsBody)
         , mSelectedAxis(None)
         , mIsDragging(false)
-        , m_CurrentSelectionMode(currentSelectionmode)
     {
         setupHandles();
+        OnSelectionModeChanged.Subscribe([this](SelectionMode newNode) {
+            OnSelectionChanged(newNode);
+		});
     }
 
     enum Axis {
@@ -32,24 +36,27 @@ public:
     void setVisible(bool visible);
 
 private:
-    void setupHandles();
-    Axis getSelectedAxis(const Ogre::Vector2& mousePos);
-    Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane);
+    static const float HANDLE_SCALE;
+    static const float HANDLE_LENGTH;
 
+    Axis mSelectedAxis;
+    bool mIsDragging;
+    btRigidBody* mPhysicsBody;
+    Ogre::Vector3 mLastMousePos;
     Ogre::SceneManager* mSceneMgr;
     Ogre::SceneNode** mTargetNode;
     Ogre::Camera* mCamera;
-
     Ogre::SceneNode* mHandleNode;
     Ogre::SceneNode* mXHandle;
     Ogre::SceneNode* mYHandle;
     Ogre::SceneNode* mZHandle;
     SelectionMode* m_CurrentSelectionMode;
 
-    Axis mSelectedAxis;
-    bool mIsDragging;
-    btRigidBody* mPhysicsBody;
-    Ogre::Vector3 mLastMousePos;
-    static const float HANDLE_SCALE;
-    static const float HANDLE_LENGTH;
+    Event<SelectionMode> m_OnSelectionModeChanged;
+
+    void setupHandles();
+    void OnSelectionChanged(SelectionMode currentMode);
+    Axis getSelectedAxis(const Ogre::Vector2& mousePos);
+    Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane);
+
 };

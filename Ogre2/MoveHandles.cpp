@@ -41,7 +41,6 @@ void MoveHandles::setupHandles() {
     mYHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
     yHandle->setMaterial(greenMaterial);
 
-    /*
     // Create Z axis handle (blue)
     Ogre::Entity* zHandle = mSceneMgr->createEntity("handle_z", Ogre::SceneManager::PT_CUBE);
     mZHandle = mHandleNode->createChildSceneNode();
@@ -49,14 +48,19 @@ void MoveHandles::setupHandles() {
     mZHandle->setScale(HANDLE_SCALE, HANDLE_SCALE, HANDLE_LENGTH);
     mZHandle->setPosition(0, 0, HANDLE_LENGTH / 2);
     zHandle->setMaterial(blueMaterial);
-    */
 }
 
 void MoveHandles::update() {
-    if (mTargetNode) 
+    if (*mTargetNode != nullptr) 
     {
         mHandleNode->setPosition((*mTargetNode)->getPosition());
     }
+}
+
+void MoveHandles::OnSelectionChanged(SelectionMode currentMode)
+{
+    std::cout << "HAPPENED";
+    setVisible(currentMode == SelectionMode::OBJECT);
 }
 
 MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {

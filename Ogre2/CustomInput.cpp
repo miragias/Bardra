@@ -1,6 +1,6 @@
 #include "CustomInput.h"
 
-CustomInput::CustomInput(CustomApplicationContext* ctx, Event<Ogre::SceneNode**> onSelectionChanged)
+CustomInput::CustomInput(CustomApplicationContext* ctx)
     : m_Ctx(ctx)
     , m_MoveHandles(ctx->getMoveHandles())
     , m_CurrentlySelectedNode(ctx->CurrentlySelectedNode)
@@ -12,7 +12,6 @@ CustomInput::CustomInput(CustomApplicationContext* ctx, Event<Ogre::SceneNode**>
     , m_IsRotating(false)
     , m_RotationCenter(Ogre::Vector3::ZERO)
     , m_SceneMgr(ctx->SceneManager)
-    , m_OnSelectionChanged(onSelectionChanged)
     , m_World(ctx->GetWorld())
 {
     m_CameraNode->setPosition(0, 0, m_CameraDistance);
@@ -48,7 +47,7 @@ void CustomInput::focusNextObject()
 
     // Update the currently selected node
     *m_CurrentlySelectedNode = targetNode;
-    m_OnSelectionChanged.Invoke(&targetNode);
+    OnSelectionChanged.Invoke(&targetNode);
 }
 
 Ogre::Vector3 CustomInput::getPointOnGround(float screenX, float screenY)
@@ -184,7 +183,7 @@ void CustomInput::checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos)
     if (closestNode)
     {
         (*m_CurrentlySelectedNode) = closestNode;
-        m_OnSelectionChanged.Invoke(&closestNode);
+        OnSelectionChanged.Invoke(&closestNode);
     }
 }
 

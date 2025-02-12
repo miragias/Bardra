@@ -16,6 +16,7 @@
 #include "Ogre2.h"
 #include <array>
 #include "Common.h"
+#include <iostream>
 
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
@@ -140,6 +141,12 @@ void CustomApplicationContext::addVertexToQuad(const Ogre::Vector3& vertex,
     indices.push_back(index); //The new index
 }
 
+void CustomApplicationContext::SetSelectionTo(SelectionMode selectionToSetTo)
+{
+    m_CurrentSelectionMode = selectionToSetTo;
+    OnSelectionModeChanged.Invoke(m_CurrentSelectionMode);
+}
+
 void CustomApplicationContext::ClearBuffersAndCreateDefault() 
 {
     // Clear previous vertices
@@ -182,8 +189,8 @@ void CustomApplicationContext::updateQuad()
         manual->textureCoord(textureCoords[i]);
     }
 
-    for (size_t i = 0; i < indices.size(); ++i) {
-        std::cout << "index: " << indices[i];
+    for (size_t i = 0; i < indices.size(); ++i) 
+    {
         manual->index(indices[i]);
     }
 
@@ -279,9 +286,9 @@ void CustomApplicationContext::ShowSliderExample()
 
     //Change mode
     if (ImGui::RadioButton("Vertex", m_CurrentSelectionMode == SelectionMode::VERTEX))
-        m_CurrentSelectionMode = SelectionMode::VERTEX;
+        SetSelectionTo(SelectionMode::VERTEX);
     if (ImGui::RadioButton("Object", m_CurrentSelectionMode == SelectionMode::OBJECT))
-        m_CurrentSelectionMode = SelectionMode::OBJECT;
+        SetSelectionTo(SelectionMode::OBJECT);
 
     ImGui::End();
 }
@@ -319,7 +326,7 @@ int main()
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
 
-    CustomInput* input = new CustomInput(&ctx, OnSelectionChanged);
+    CustomInput* input = new CustomInput(&ctx);
     ctx.addInputListener(input);
     ctx.getRoot()->startRendering();
     ctx.closeApp();
