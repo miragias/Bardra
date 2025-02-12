@@ -39,14 +39,6 @@ void MoveHandles::setupHandles() {
     mYHandle->setScale(HANDLE_SCALE, HANDLE_LENGTH, HANDLE_SCALE);
     mYHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
     yHandle->setMaterial(greenMaterial);
-
-    // Create Z axis handle (blue)
-    Ogre::Entity* zHandle = mSceneMgr->createEntity("handle_z", Ogre::SceneManager::PT_CUBE);
-    mZHandle = mHandleNode->createChildSceneNode();
-    mZHandle->attachObject(zHandle);
-    mZHandle->setScale(HANDLE_SCALE, HANDLE_SCALE, HANDLE_LENGTH);
-    mZHandle->setPosition(0, 0, HANDLE_LENGTH / 2);
-    zHandle->setMaterial(blueMaterial);
 }
 
 void MoveHandles::update() {
@@ -83,15 +75,6 @@ MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
         closest_distance = yResult.second;
         selected = Y;
    }
-
-    /*
-    std::pair<bool, float> zResult = mouseRay.intersects(mZHandle->_getWorldAABB());
-    if (zResult.first && zResult.second < closest_distance) {
-        closest_distance = zResult.second;
-        selected = Z;
-    }
-    */
-
     return selected;
 }
 

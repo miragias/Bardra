@@ -48,7 +48,6 @@ private:
     Ogre::SceneNode* mHandleNode;
     Ogre::SceneNode* mXHandle;
     Ogre::SceneNode* mYHandle;
-    Ogre::SceneNode* mZHandle;
     SelectionMode* m_CurrentSelectionMode;
 
     Event<SelectionMode> m_OnSelectionModeChanged;
