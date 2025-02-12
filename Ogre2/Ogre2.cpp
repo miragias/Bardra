@@ -65,13 +65,11 @@ void CustomApplicationContext::setup()
     // Attach the camera to the viewport
     getRenderWindow()->addViewport(cam);
 
-    /*
     auto s1 = CreateEntity("S1");
     auto s2 = CreateEntity("S2");
 
     CurrentlySelectedNode = &s1;
     s2->setPosition(100, 0, 0);
-    */
 
     //imgui
     auto imguiOverlay = initialiseImGui();
@@ -91,7 +89,7 @@ void CustomApplicationContext::setup()
 
     initBulletPhysics(scnMgr);
 
-    //m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody);
+    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody);
     createMaterialWithTexture();
     createTexturedQuad(scnMgr);
 
