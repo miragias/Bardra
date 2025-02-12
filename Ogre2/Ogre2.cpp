@@ -1,22 +1,9 @@
-#include <Ogre.h>
-#include <OgreApplicationContext.h>
-#include <OgreShaderGenerator.h>
-
-#include <LinearMath/btVector3.h>
-#include <LinearMath/btDefaultMotionState.h>
-
-#include <imgui.h>
-#include <OgreImGuiOverlay.h>
-#include <OgreOverlaySystem.h>
-#include <OgreOverlayManager.h>
-#include <OgreImGuiInputListener.h>
+#include "stdafx.h"
 #include "MoveHandles.h"
 #include "CustomInput.h"
 #include "Events.h"
 #include "Ogre2.h"
-#include <array>
 #include "Common.h"
-#include <iostream>
 
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{

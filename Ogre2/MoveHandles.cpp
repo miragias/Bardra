@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "MoveHandles.h"
-#include <iostream>
-#include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
 const float MoveHandles::HANDLE_SCALE = 0.01f;

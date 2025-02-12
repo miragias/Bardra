@@ -74,6 +74,9 @@
     <IncludePath>C:\Users\ioann\Bin\ogre\include\OGRE;C:\Users\ioann\Bin\ogre\include\OGRE\Bites;C:\Users\ioann\Bin\ogre\include\OGRE\RTShaderSystem;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\ioann\Bin\ogre\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(ProjectDir)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -109,6 +112,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bites;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bullet;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\MeshLodGenerator;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Overlay;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Paging;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\RTShaderSystem;C:\Users\ioann\Bin\ogre\include\OGRE\RenderSystems;C:\Users\ioann\Desktop\14.3.2.ogre\ogre\OgreMain\src;C:\Users\ioann\Desktop\vcpkg\packages\bullet3_x64-windows\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>stdafx.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +124,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -127,6 +132,9 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bites;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Bullet;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\MeshLodGenerator;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Overlay;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\Paging;C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\include\OGRE\RTShaderSystem;C:\Users\ioann\Bin\ogre\include\OGRE\RenderSystems;C:\Users\ioann\Desktop\14.3.2.ogre\ogre\OgreMain\src;C:\Users\ioann\Desktop\vcpkg\packages\bullet3_x64-windows\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>stdafx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +149,12 @@
     <ClCompile Include="CustomInput.cpp" />
     <ClCompile Include="MoveHandles.cpp" />
     <ClCompile Include="Ogre2.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomInput.h" />
@@ -148,6 +162,7 @@
     <ClInclude Include="EventSystem.h" />
     <ClInclude Include="MoveHandles.h" />
     <ClInclude Include="Ogre2.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

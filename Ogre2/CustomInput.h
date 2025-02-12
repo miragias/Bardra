@@ -1,13 +1,8 @@
 #pragma once
 
-#include <Bites/OgreApplicationContext.h>
-#include <OgreCamera.h>
-#include <OgreRay.h>
-#include <OgreSceneQuery.h>
+#include "stdafx.h"
 #include "MoveHandles.h"
 #include "Ogre2.h"
-#include <LinearMath/btVector3.h>
-#include "EventSystem.h"
 
 class CustomInput : public OgreBites::InputListener
 {

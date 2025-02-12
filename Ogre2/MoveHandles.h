@@ -1,6 +1,5 @@
 #pragma once
-#include <Ogre.h>
-#include <btBulletDynamicsCommon.h>
+#include "stdafx.h"
 #include "Common.h"
 #include "Events.h"
 

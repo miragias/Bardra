@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CustomInput.h"
 
 CustomInput::CustomInput(CustomApplicationContext* ctx)
