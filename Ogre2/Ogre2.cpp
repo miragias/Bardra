@@ -18,6 +18,7 @@
 #include "CustomInput.h"
 #include "Events.h"
 #include "Ogre2.h"
+#include <array>
 
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
@@ -64,11 +65,13 @@ void CustomApplicationContext::setup()
     // Attach the camera to the viewport
     getRenderWindow()->addViewport(cam);
 
+    /*
     auto s1 = CreateEntity("S1");
     auto s2 = CreateEntity("S2");
 
     CurrentlySelectedNode = &s1;
     s2->setPosition(100, 0, 0);
+    */
 
     //imgui
     auto imguiOverlay = initialiseImGui();
@@ -88,7 +91,7 @@ void CustomApplicationContext::setup()
 
     initBulletPhysics(scnMgr);
 
-    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody);
+    //m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody);
     createMaterialWithTexture();
     createTexturedQuad(scnMgr);
 
@@ -107,7 +110,8 @@ void CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
 {
     manual = sceneMgr->createManualObject("Quad");
 
-    updateQuad();  // Build the quad initially
+    ClearBuffersAndCreateDefault();
+    updateQuad();
 
     // Create a scene node and attach the manual object
     Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
@@ -115,34 +119,75 @@ void CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
     m_ObjectNodes.push_back(node);
 }
 
-void CustomApplicationContext::UpdateVertices() 
+void CustomApplicationContext::addVertexToQuad(const Ogre::Vector3& vertex,
+                                               const Ogre::Vector2& texCoord,
+                                               const std::array<int,2> otherVertexIndices,
+                                               size_t index)
 {
-    // Store initial vertex positions
-    vertices = {
-        {-quadSize, quadSize, 0},   // Top-left
-        {quadSize, quadSize, 0},    // Top-right
-        {-quadSize, -quadSize, 0},  // Bottom-left
-        {quadSize, -quadSize, 0}    // Bottom-right
-    };
+    if (index > vertices.size()) 
+    {
+        index = vertices.size();
+    }
+    vertices.insert(vertices.begin() + index, vertex);
+    textureCoords.insert(textureCoords.begin() + index, texCoord);
+
+    //TODO(JohnMir): Improve this
+    if(otherVertexIndices[0] == -1) return;
+
+    //The indexes of the other 2 vertexes which are neighbours to the new incoming index
+    for(int index : otherVertexIndices)
+    {
+        indices.push_back(index);
+    }
+    indices.push_back(index); //The new index
+}
+
+void CustomApplicationContext::ClearBuffersAndCreateDefault() 
+{
+    // Clear previous vertices
+    vertices.clear();
+    textureCoords.clear();
+    indices.clear();
+
+    // Default quad vertices
+    addVertexToQuad(Ogre::Vector3(-quadSize, quadSize, 0), Ogre::Vector2(-1, 1), {-1,-1} , vertices.size());   // Top-left
+    addVertexToQuad(Ogre::Vector3(quadSize, quadSize, 0), Ogre::Vector2(1,1), {-1, -1}, vertices.size());    // Top-right
+    addVertexToQuad(Ogre::Vector3(-quadSize, -quadSize, 0), Ogre::Vector2(-1, -1), {-1, -1}, vertices.size());  // Bottom-left
+    addVertexToQuad(Ogre::Vector3(quadSize, -quadSize, 0), Ogre::Vector2(1, -1), {-1 , -1}, vertices.size());   // Bottom-right
+    
+    // Define triangles dynamically based on vertex order
+    indices.push_back(0);
+    indices.push_back(1); // New vertex in the middle top
+    indices.push_back(2);
+    
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(3);
+
+}
+
+void CustomApplicationContext::ResizeQuad()
+{
+    vertices[0] = Ogre::Vector3(-quadSize, quadSize, 0);
+    vertices[1] = Ogre::Vector3(quadSize, quadSize, 0);
+    vertices[2] = Ogre::Vector3(-quadSize, -quadSize, 0);
+    vertices[3] = Ogre::Vector3(quadSize, -quadSize, 0);
 }
 
 void CustomApplicationContext::updateQuad()
 {
-    UpdateVertices();
-    manual->clear();  // Clear the previous shape
-
-    manual->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
-
-    for (int i = 0; i < 4; i++) {
+    manual->clear();  // Clear previous shape
+    manual->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    
+    for (size_t i = 0; i < vertices.size(); ++i) {
         manual->position(vertices[i]);   // Use updated vertex positions
-        manual->textureCoord(i % 2, i / 2);
+        manual->textureCoord(textureCoords[i]);
     }
 
-    // Recreate the quad indices
-    manual->index(0);
-    manual->index(1);
-    manual->index(2);
-    manual->index(3);
+    for (size_t i = 0; i < indices.size(); ++i) {
+        std::cout << "index: " << indices[i];
+        manual->index(indices[i]);
+    }
 
     manual->end();
 }
@@ -214,59 +259,18 @@ void CustomApplicationContext::initBulletPhysics(Ogre::SceneManager* scnMgr)
         */
 }
 
-void CustomApplicationContext::updateVertices(const Ogre::Vector3& topLeft,
-                                              const Ogre::Vector3& topRight,
-                                              const Ogre::Vector3& bottomLeft,
-                                              const Ogre::Vector3& bottomRight)
-{
-    std::cout << topLeft;
-    manual->beginUpdate(0);
-
-    // Front face vertices
-    manual->position(topLeft);
-    manual->textureCoord(0, 0);
-    manual->position(topRight);
-    manual->textureCoord(1, 0);
-    manual->position(bottomLeft);
-    manual->textureCoord(0, 1);
-    manual->position(bottomRight);
-    manual->textureCoord(1, 1);
-
-    // Back face vertices
-    manual->position(topLeft);
-    manual->textureCoord(0, 0);
-    manual->position(bottomLeft);
-    manual->textureCoord(0, 1);
-    manual->position(topRight);
-    manual->textureCoord(1, 0);
-    manual->position(bottomRight);
-    manual->textureCoord(1, 1);
-
-    // Front face indices
-    manual->index(0);
-    manual->index(1);
-    manual->index(2);
-    manual->index(2);
-    manual->index(1);
-    manual->index(3);
-
-    // Back face indices
-    manual->index(4);
-    manual->index(5);
-    manual->index(6);
-    manual->index(6);
-    manual->index(5);
-    manual->index(7);
-
-    manual->end();
-}
-
 void CustomApplicationContext::ShowSliderExample()
 {
     ImGui::Begin("Slider Example"); // Create a new window
     ImGui::SliderInt("Adjust Value", &sliderValue, -50, 50); // Create slider
     if (ImGui::SliderFloat("Quad Size", &quadSize, 0, 25)) 
     {
+        ClearBuffersAndCreateDefault();
+        updateQuad();
+    }
+    if (ImGui::Button("Add vertex on top side")) 
+    {
+        addVertexToQuad(Ogre::Vector3(0, quadSize + 2, 0), Ogre::Vector2(0.5, 0), {0,1}, 4);
         updateQuad();
     }
     ImGui::Text("Current Value: %d", sliderValue); // Display value

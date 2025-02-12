@@ -48,20 +48,27 @@ public:
     std::vector<Ogre::SceneNode*> GetWorld() const;
 
 private:
+    void addVertexToQuad(const Ogre::Vector3& vertex,
+                         const Ogre::Vector2& texCoord,
+                         const std::array<int,2> otherVertexIndices,
+                         size_t index);
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
+    void ResizeQuad();
     Ogre::ManualObject* manual;
     MoveHandles* m_MoveHandles;
 	int sliderValue = 0; // Variable to store the slider value
 	float quadSize = 4.0f;
     std::vector<TimelineEvent> events;
     Timeline timeline;
+    std::vector<Ogre::Vector3> vertices;
+    std::vector<Ogre::Vector2> textureCoords;
+    std::vector<int> indices;
 
 protected:
-    std::vector<Ogre::Vector3> vertices;
 
     void setup() override;
     void createTexturedQuad(Ogre::SceneManager* sceneMgr);
-    void UpdateVertices() ;
+    void ClearBuffersAndCreateDefault() ;
     void updateQuad();
     void createMaterialWithTexture();
     Ogre::SceneNode* CreateEntity(const std::string name);

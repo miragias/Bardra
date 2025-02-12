@@ -173,14 +173,12 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
         else{
             (*mTargetNode)->setPosition((*mTargetNode)->getPosition() + movement);
         }
-        std::cout << currentPos;
         mLastMousePos = currentPos;
     }
 }
 
 bool MoveHandles::mouseReleased() {
     if (mIsDragging) {
-		std::cout << "remove to dragging";
         mIsDragging = false;
         mSelectedAxis = None;
         return true;
