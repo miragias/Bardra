@@ -3,7 +3,7 @@
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
-const float MoveHandles::HANDLE_SCALE = 0.02f;
+const float MoveHandles::HANDLE_SCALE = 0.01f;
 const float MoveHandles::HANDLE_LENGTH = 1.5f;
 
 void MoveHandles::setupHandles() {
@@ -51,7 +51,8 @@ void MoveHandles::setupHandles() {
 }
 
 void MoveHandles::update() {
-    if (mTargetNode) {
+    if (mTargetNode) 
+    {
         mHandleNode->setPosition((*mTargetNode)->getPosition());
     }
 }

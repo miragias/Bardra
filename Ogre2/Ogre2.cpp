@@ -150,10 +150,10 @@ void CustomApplicationContext::ClearBuffersAndCreateDefault()
     indices.clear();
 
     // Default quad vertices
-    addVertexToQuad(Ogre::Vector3(-quadSize, quadSize, 0), Ogre::Vector2(-1, 1), {-1,-1} , vertices.size());   // Top-left
-    addVertexToQuad(Ogre::Vector3(quadSize, quadSize, 0), Ogre::Vector2(1,1), {-1, -1}, vertices.size());    // Top-right
-    addVertexToQuad(Ogre::Vector3(-quadSize, -quadSize, 0), Ogre::Vector2(-1, -1), {-1, -1}, vertices.size());  // Bottom-left
-    addVertexToQuad(Ogre::Vector3(quadSize, -quadSize, 0), Ogre::Vector2(1, -1), {-1 , -1}, vertices.size());   // Bottom-right
+    addVertexToQuad(Ogre::Vector3(-quadSize, quadSize, 0), Ogre::Vector2(0, 0.5f), {-1,-1} , vertices.size());   // Top-left
+    addVertexToQuad(Ogre::Vector3(quadSize, quadSize, 0), Ogre::Vector2(1,0.5f), {-1, -1}, vertices.size());    // Top-right
+    addVertexToQuad(Ogre::Vector3(-quadSize, -quadSize, 0), Ogre::Vector2(0,0), {-1, -1}, vertices.size());  // Bottom-left
+    addVertexToQuad(Ogre::Vector3(quadSize, -quadSize, 0), Ogre::Vector2(1, 0), {-1 , -1}, vertices.size());   // Bottom-right
     
     // Define triangles dynamically based on vertex order
     indices.push_back(0);
@@ -270,7 +270,7 @@ void CustomApplicationContext::ShowSliderExample()
     }
     if (ImGui::Button("Add vertex on top side")) 
     {
-        addVertexToQuad(Ogre::Vector3(0, quadSize + 2, 0), Ogre::Vector2(0.5, 0), {0,1}, 4);
+        addVertexToQuad(Ogre::Vector3(0, quadSize + 2, 0), Ogre::Vector2(0.5, 1), {0,1}, 4);
         updateQuad();
     }
     ImGui::Text("Current Value: %d", sliderValue); // Display value
