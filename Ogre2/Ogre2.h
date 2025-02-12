@@ -31,7 +31,6 @@ struct Timeline {
     float current_time = 0.0f; // Current playhead position
     float zoom = 1.0f; // Zoom level (1.0 = normal, >1 = zoom in, <1 = zoom out)
 };
-
 class CustomApplicationContext : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
 public:
@@ -63,11 +62,12 @@ private:
     std::vector<Ogre::Vector3> vertices;
     std::vector<Ogre::Vector2> textureCoords;
     std::vector<int> indices;
+    SelectionMode m_CurrentSelectionMode;
 
 protected:
 
     void setup() override;
-    void createTexturedQuad(Ogre::SceneManager* sceneMgr);
+    Ogre::SceneNode* createTexturedQuad(Ogre::SceneManager* sceneMgr);
     void ClearBuffersAndCreateDefault() ;
     void updateQuad();
     void createMaterialWithTexture();

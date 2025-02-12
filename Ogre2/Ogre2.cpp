@@ -2,10 +2,6 @@
 #include <OgreApplicationContext.h>
 #include <OgreShaderGenerator.h>
 
-#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <BulletCollision/CollisionShapes/btBoxShape.h>
-#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
-#include <btBulletDynamicsCommon.h>
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
@@ -19,6 +15,7 @@
 #include "Events.h"
 #include "Ogre2.h"
 #include <array>
+#include "Common.h"
 
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
@@ -65,11 +62,13 @@ void CustomApplicationContext::setup()
     // Attach the camera to the viewport
     getRenderWindow()->addViewport(cam);
 
+    /*
     auto s1 = CreateEntity("S1");
     auto s2 = CreateEntity("S2");
 
     CurrentlySelectedNode = &s1;
     s2->setPosition(100, 0, 0);
+    */
 
     //imgui
     auto imguiOverlay = initialiseImGui();
@@ -87,11 +86,11 @@ void CustomApplicationContext::setup()
     imguiOverlay->NewFrame();
     scnMgr->addRenderQueueListener(mOverlaySystem);
 
-    initBulletPhysics(scnMgr);
-
-    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody);
     createMaterialWithTexture();
-    createTexturedQuad(scnMgr);
+    Ogre::SceneNode* quadNode = createTexturedQuad(scnMgr);
+    CurrentlySelectedNode = &quadNode;
+
+    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody, &m_CurrentSelectionMode);
 
     OnSelectionChanged.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
@@ -104,7 +103,7 @@ void CustomApplicationContext::SetCurrentlySelected(Ogre::SceneNode** newNode)
 }
 
 
-void CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
+Ogre::SceneNode* CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
 {
     manual = sceneMgr->createManualObject("Quad");
 
@@ -115,6 +114,7 @@ void CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
     Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
     node->attachObject(manual);
     m_ObjectNodes.push_back(node);
+    return node;
 }
 
 void CustomApplicationContext::addVertexToQuad(const Ogre::Vector3& vertex,
@@ -219,44 +219,6 @@ Ogre::SceneNode* CustomApplicationContext::CreateEntity(const std::string name)
     return node;
 }
 
-void CustomApplicationContext::initBulletPhysics(Ogre::SceneManager* scnMgr)
-{
-    /*
-        // 2. Bullet physics setup
-        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
-
-        dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
-
-        // 3. Create ground plane
-        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
-        btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
-        btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-        btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-        dynamicsWorld->addRigidBody(groundRigidBody);
-
-        // 4. Create dynamic box in Bullet
-        btCollisionShape* boxShape = new btBoxShape(btVector3(1, 1, 1));
-        btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 10, 0)));
-        btScalar mass = 1;
-        btVector3 boxInertia(0, 0, 0);
-        boxShape->calculateLocalInertia(mass, boxInertia);
-        btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(mass, boxMotionState, boxShape, boxInertia);
-        boxRigidBody = new btRigidBody(boxRigidBodyCI);
-        dynamicsWorld->addRigidBody(boxRigidBody);
-        */
-
-    /*
-        Ogre::Entity* boxEntity = scnMgr->createEntity(Ogre::SceneManager::PT_CUBE);
-        boxNode = scnMgr->getRootSceneNode()->createChildSceneNode("BoxNode");
-        boxNode->attachObject(boxEntity);
-        boxNode->setScale(1, 1, 1); // Scale to match Bullet's unit cube
-        */
-}
-
 void CustomApplicationContext::ShowSliderExample()
 {
     ImGui::Begin("Slider Example"); // Create a new window
@@ -314,6 +276,12 @@ void CustomApplicationContext::ShowSliderExample()
         ImGui::SetCursorScreenPos(ImVec2(start_x, y_mid + 15));
         ImGui::Text("%s", event.label.c_str());
     }
+
+    //Change mode
+    if (ImGui::RadioButton("Vertex", m_CurrentSelectionMode == SelectionMode::VERTEX))
+        m_CurrentSelectionMode = SelectionMode::VERTEX;
+    if (ImGui::RadioButton("Object", m_CurrentSelectionMode == SelectionMode::OBJECT))
+        m_CurrentSelectionMode = SelectionMode::OBJECT;
 
     ImGui::End();
 }

@@ -1,17 +1,19 @@
 #pragma once
 #include <Ogre.h>
 #include <btBulletDynamicsCommon.h>
+#include "Common.h"
 
 class MoveHandles {
 public:
     MoveHandles(Ogre::SceneManager* sceneMgr,
-        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody)
+        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody, SelectionMode* currentSelectionmode)
         : mSceneMgr(sceneMgr)
         , mTargetNode(targetNode)
         , mCamera(camera)
         , mPhysicsBody(physicsBody)
         , mSelectedAxis(None)
         , mIsDragging(false)
+        , m_CurrentSelectionMode(currentSelectionmode)
     {
         setupHandles();
     }
@@ -42,6 +44,7 @@ private:
     Ogre::SceneNode* mXHandle;
     Ogre::SceneNode* mYHandle;
     Ogre::SceneNode* mZHandle;
+    SelectionMode* m_CurrentSelectionMode;
 
     Axis mSelectedAxis;
     bool mIsDragging;
