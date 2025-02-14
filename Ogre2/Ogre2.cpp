@@ -78,7 +78,61 @@ void CustomApplicationContext::setup()
                                     CurrentlySelectedNode, SceneManager, m_ObjectNodes,
                                     this->getRenderWindow(), [this](){this->shutdown();});
     addInputListener(m_CustomInput);
+
+    g_OnSelectionModeChangedEvent.Subscribe([this](SelectionMode newMode){CheckDoAppropriateSystem(newMode);});
 }
+
+void CustomApplicationContext::CheckDoAppropriateSystem(SelectionMode selectionMode)
+{
+    switch(m_CurrentSelectionMode)
+    {
+        case OBJECT:
+            DestroySceneNode(m_VerticesNodesParent);
+            break;
+        case VERTEX:
+            createVertexNodes();
+            break;
+    }
+}
+
+void CustomApplicationContext::createVertexNodes()
+{
+    int a = 0;
+    m_VerticesNodesParent = CreateEntity("vertex_parent");
+
+    for(auto vertexPosition : m_Vertices)
+    {
+        auto scaleAmount = 0.02f;
+        auto vertexSize = Ogre::Vector3(scaleAmount, scaleAmount, scaleAmount);
+        Ogre::Entity* entity = SceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
+        entity->setMaterialName("Examples/Rockwall");
+        CreateEntity(std::to_string(a), &vertexPosition, m_VerticesNodesParent, entity, &vertexSize);
+        a++;
+    }
+}
+
+void CustomApplicationContext::DestroySceneNode(Ogre::SceneNode* node)
+{
+   if (!node) return; // Avoid null pointer access
+
+    // 1. Remove all child nodes first
+    while (node->numChildren() > 0) {
+        Ogre::SceneNode* child = static_cast<Ogre::SceneNode*>(node->getChild(0));
+        DestroySceneNode(child); // Recursively remove children
+    }
+
+    // 2. Detach and destroy all attached objects
+    node->detachAllObjects();
+
+    // 3. Remove from parent if applicable
+    if (node->getParent()) {
+        node->getParent()->removeChild(node);
+    }
+
+    // 4. Destroy the node
+    SceneManager->destroySceneNode(node);
+}
+
 
 void CustomApplicationContext::SetCurrentlySelected(Ogre::SceneNode** newNode) 
 {
@@ -150,7 +204,6 @@ void CustomApplicationContext::ClearBuffersAndCreateDefault()
     m_Indices.push_back(1);
     m_Indices.push_back(2);
     m_Indices.push_back(3);
-
 }
 
 void CustomApplicationContext::resizeQuad()
@@ -190,19 +243,35 @@ void CustomApplicationContext::createMaterialWithTexture()
 
     // Set material to use lighting (optional)
     material->setLightingEnabled(false);
+
 }
 
-Ogre::SceneNode* CustomApplicationContext::CreateEntity(const std::string name)
+Ogre::SceneNode* CustomApplicationContext::CreateEntity(const std::string name,
+                                                        const Ogre::Vector3* targetPosition,
+                                                        Ogre::SceneNode* parent,
+                                                        Ogre::Entity* entityToAttach,
+                                                        const Ogre::Vector3* targetScale)
 {
     //TODO(JohnMir): Check if same name passed to fix this
-    Ogre::SceneNode* node = SceneManager->getRootSceneNode()->createChildSceneNode(name);
-    Ogre::Entity* entity = SceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
+    Ogre::SceneNode* parentToUse = parent ? parent : SceneManager->getRootSceneNode();
+    Ogre::SceneNode* node = parentToUse->createChildSceneNode(name);
 
-    node->attachObject(entity);
-    node->setScale(1,1,1);
+    if(entityToAttach)
+    {
+        node->attachObject(entityToAttach);
+    }
+
+    if(targetScale)
+    {
+        node->setScale(*targetScale);
+    }
+    if(targetPosition)
+    {
+        std::cout << "Create vertex at : " << *targetPosition << "\n";
+        node->setPosition(*targetPosition);
+    }
 
     //TODO:
-    entity->setMaterialName("Examples/Rockwall");
 
     m_ObjectNodes.push_back(node);
     return node;

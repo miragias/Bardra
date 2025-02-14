@@ -45,6 +45,7 @@ private:
     Ogre::ImGuiOverlay* ImguiOverlayContext;
     Ogre::SceneNode** CurrentlySelectedNode;
 
+    Ogre::SceneNode* m_VerticesNodesParent;
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
     void resizeQuad();
     Ogre::ManualObject* m_ManualObject;
@@ -58,12 +59,18 @@ private:
     std::vector<Ogre::Vector2> m_TextureCoords;
     std::vector<int> m_Indices;
     SelectionMode m_CurrentSelectionMode;
-
+    void CheckDoAppropriateSystem(SelectionMode selectionMode);
+    void DestroySceneNode(Ogre::SceneNode* node);
+    void createVertexNodes();
     void addVertexToQuad(const Ogre::Vector3& vertex,
                          const Ogre::Vector2& texCoord,
                          const std::array<int,2> otherVertexIndices,
                          size_t index);
     void SetSelectionTo(SelectionMode selectionToSetTo);
+    Ogre::SceneNode* CreateEntity(const std::string name, const Ogre::Vector3* targetPosition = nullptr,
+                                  Ogre::SceneNode* parent = nullptr,
+                                  Ogre::Entity* entityToAttach = nullptr,
+                                  const Ogre::Vector3* targetScale = nullptr);
 
 protected:
 
@@ -72,7 +79,6 @@ protected:
     void ClearBuffersAndCreateDefault() ;
     void updateQuad();
     void createMaterialWithTexture();
-    Ogre::SceneNode* CreateEntity(const std::string name);
     void initBulletPhysics(Ogre::SceneManager* scnMgr);
 
     void updateVertices(const Ogre::Vector3& topLeft = Ogre::Vector3(-1, 1, 0),
