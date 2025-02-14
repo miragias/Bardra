@@ -32,22 +32,24 @@ class CustomApplicationContext : public OgreBites::ApplicationContext, public Og
 {
 public:
     CustomApplicationContext(const Ogre::String& appName) : OgreBites::ApplicationContext(appName) {}
+
+private:
     void SetCurrentlySelected(Ogre::SceneNode** newNode);
 
+
+    std::vector<Ogre::SceneNode*> GetWorld() const;
+    MoveHandles* getMoveHandles() { return m_MoveHandles; }
     Ogre::Camera* Camera;
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
     Ogre::ImGuiOverlay* ImguiOverlayContext;
     Ogre::SceneNode** CurrentlySelectedNode;
 
-    std::vector<Ogre::SceneNode*> GetWorld() const;
-    MoveHandles* getMoveHandles() { return m_MoveHandles; }
-
-private:
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
     void resizeQuad();
     Ogre::ManualObject* m_ManualObject;
     MoveHandles* m_MoveHandles;
+    CustomInput* m_CustomInput;
     std::vector<TimelineEvent> m_TimelineEvents;
 	int m_SliderValue = 0; // Variable to store the slider value
 	float m_QuadSize = 4.0f;

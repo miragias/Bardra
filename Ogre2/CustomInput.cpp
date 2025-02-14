@@ -1,24 +1,6 @@
 #include "stdafx.h"
 #include "CustomInput.h"
 
-CustomInput::CustomInput(CustomApplicationContext* ctx)
-    : m_Ctx(ctx)
-    , m_MoveHandles(ctx->getMoveHandles())
-    , m_CurrentlySelectedNode(ctx->CurrentlySelectedNode)
-    , m_Camera(ctx->Camera)
-    , m_CameraNode(ctx->CamNode)
-    , m_LastMousePos(Ogre::Vector2::ZERO)
-    , m_CameraDistance(100.0f)
-    , m_IsCameraMoving(false)
-    , m_IsRotating(false)
-    , m_RotationCenter(Ogre::Vector3::ZERO)
-    , m_SceneMgr(ctx->SceneManager)
-    , m_World(ctx->GetWorld())
-{
-    m_CameraNode->setPosition(0, 0, m_CameraDistance);
-    m_CameraNode->lookAt(m_RotationCenter, Ogre::Node::TS_WORLD);
-}
-
 void CustomInput::focusNextObject()
 {
     if (m_World.empty()) return;
@@ -53,7 +35,7 @@ void CustomInput::focusNextObject()
 
 Ogre::Vector3 CustomInput::getPointOnGround(float screenX, float screenY)
 {
-    Ogre::RenderWindow* window = m_Ctx->getRenderWindow();
+    Ogre::RenderWindow* window = m_RenderWindow;
 
     // Convert screen coordinates to ray
     Ogre::Ray mouseRay = m_Camera->getCameraToViewportRay(
@@ -77,7 +59,6 @@ Ogre::Vector3 CustomInput::getPointOnGround(float screenX, float screenY)
 bool CustomInput::keyPressed(const OgreBites::KeyboardEvent& evt)
 {
     if (evt.keysym.sym == 27) { // Escape key
-        m_Ctx->closeApp();
         return true;
     }
 
@@ -90,7 +71,7 @@ bool CustomInput::keyPressed(const OgreBites::KeyboardEvent& evt)
 
 bool CustomInput::mouseMoved(const OgreBites::MouseMotionEvent& evt)
 {
-    Ogre::RenderWindow* window = m_Ctx->getRenderWindow();
+    Ogre::RenderWindow* window = m_RenderWindow;
     Ogre::Vector2 currentPos(
         evt.x / float(window->getWidth()),
         evt.y / float(window->getHeight())
@@ -131,7 +112,7 @@ bool CustomInput::mouseMoved(const OgreBites::MouseMotionEvent& evt)
 
 bool CustomInput::mousePressed(const OgreBites::MouseButtonEvent& evt)
 {
-    Ogre::RenderWindow* window = m_Ctx->getRenderWindow();
+    Ogre::RenderWindow* window = m_RenderWindow;
     m_LastMousePos = Ogre::Vector2(
         evt.x / float(window->getWidth()),
         evt.y / float(window->getHeight())

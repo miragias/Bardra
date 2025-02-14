@@ -5,7 +5,6 @@
 #include "Ogre2.h"
 #include "Common.h"
 
-
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
     return m_ObjectNodes;
 }
@@ -48,14 +47,6 @@ void CustomApplicationContext::setup()
     // Attach the camera to the viewport
     getRenderWindow()->addViewport(cam);
 
-    /*
-    auto s1 = CreateEntity("S1");
-    auto s2 = CreateEntity("S2");
-
-    CurrentlySelectedNode = &s1;
-    s2->setPosition(100, 0, 0);
-    */
-
     //imgui
     auto imguiOverlay = initialiseImGui();
     ImguiOverlayContext = imguiOverlay;
@@ -81,6 +72,12 @@ void CustomApplicationContext::setup()
     g_OnSelectionChangedEvent.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
 	});
+
+    //Custom Input
+    m_CustomInput = new CustomInput(m_MoveHandles, Camera, camNode,
+                                    CurrentlySelectedNode, SceneManager, m_ObjectNodes,
+                                    this->getRenderWindow(), [this](){this->shutdown();});
+    addInputListener(m_CustomInput);
 }
 
 void CustomApplicationContext::SetCurrentlySelected(Ogre::SceneNode** newNode) 
@@ -280,19 +277,6 @@ void CustomApplicationContext::ShowSliderExample()
 
 bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-    /*
-        // Simulate physics
-        dynamicsWorld->stepSimulation(evt.timeSinceLastFrame, 10);
-
-        // Get box transform from Bullet
-        btTransform trans;
-        boxRigidBody->getMotionState()->getWorldTransform(trans);
-        btVector3 pos = trans.getOrigin();
-
-        // Update Ogre node position
-        bn->setPosition(Ogre::Vector3(pos.getX(), pos.getY(), pos.getZ()));
-        */
-
     // Update move handles
     if (m_MoveHandles) 
     {
@@ -310,9 +294,6 @@ int main()
 {
     CustomApplicationContext ctx("OgreTutorialApp");
     ctx.initApp();
-
-    CustomInput* input = new CustomInput(&ctx);
-    ctx.addInputListener(input);
     ctx.getRoot()->startRendering();
     ctx.closeApp();
     return 0;
