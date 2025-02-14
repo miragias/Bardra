@@ -4,3 +4,4 @@ Ogre2/imgui.ini
 .cache
 build
 Ogre2/Release
+Ogre2/stdafx.pch
