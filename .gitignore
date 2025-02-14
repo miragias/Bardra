@@ -16,3 +16,16 @@ x64/Release/imgui.ini
 *.page
 *.log
 *.lodconfig
+x64/Media/materials/programs
+x64/Media/materials/textures
+x64/Media/CSMShadows
+x64/Media/DeferredShadingMedia
+x64/Media/Main
+x64/Media/models
+x64/Media/packs
+x64/Media/PBR
+x64/Media/PCZAppMedia
+x64/Media/RTShaderLib
+x64/Media/Terrain
+x64/Media/thumbnails
+x64/Media/volumeTerrain
