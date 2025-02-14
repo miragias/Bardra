@@ -142,7 +142,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreBites.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreMain.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreRTShaderSystem.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreMeshLodGenerator.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreOverlay.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgrePaging.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreProperty.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreTerrain.lib";"C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreVolume.lib";%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\ioann\Bin\ogre\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\ioann\Desktop\ogre-sdk-v14.3.2-msvc142-x64\lib\OgreMain.lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

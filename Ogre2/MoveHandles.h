@@ -6,18 +6,16 @@
 class MoveHandles {
 public:
     MoveHandles(Ogre::SceneManager* sceneMgr,
-        Ogre::SceneNode** targetNode, Ogre::Camera* camera, btRigidBody* physicsBody,
-        SelectionMode* currentSelectionmode)
-        : mSceneMgr(sceneMgr)
-        , mTargetNode(targetNode)
-        , mCamera(camera)
-        , mPhysicsBody(physicsBody)
-        , mSelectedAxis(None)
-        , mIsDragging(false)
+        Ogre::SceneNode** targetNode, Ogre::Camera* camera, SelectionMode* currentSelectionmode)
+        : m_SceneMgr(sceneMgr)
+        , m_TargetNode(targetNode)
+        , m_Camera(camera)
+        , m_SelectedAxis(None)
+        , m_IsDragging(false)
     {
         setupHandles();
-        OnSelectionModeChanged.Subscribe([this](SelectionMode newNode) {
-            OnSelectionChanged(newNode);
+        g_OnSelectionModeChangedEvent.Subscribe([this](SelectionMode newNode) {
+            onSelectionChanged(newNode);
 		});
     }
 
@@ -28,32 +26,31 @@ public:
         Z
     };
 
-    void update();
-    bool mousePressed(const Ogre::Vector2& mousePos);
-    bool mouseReleased();
-    void mouseMove(const Ogre::Vector2& mousePos);
-    void setVisible(bool visible);
+    void Update();
+    bool MousePressed(const Ogre::Vector2& mousePos);
+    bool MouseReleased();
+    void MouseMove(const Ogre::Vector2& mousePos);
 
 private:
     static const float HANDLE_SCALE;
     static const float HANDLE_LENGTH;
 
-    Axis mSelectedAxis;
-    bool mIsDragging;
-    btRigidBody* mPhysicsBody;
-    Ogre::Vector3 mLastMousePos;
-    Ogre::SceneManager* mSceneMgr;
-    Ogre::SceneNode** mTargetNode;
-    Ogre::Camera* mCamera;
-    Ogre::SceneNode* mHandleNode;
-    Ogre::SceneNode* mXHandle;
-    Ogre::SceneNode* mYHandle;
+    Axis m_SelectedAxis;
+    bool m_IsDragging;
+    Ogre::Vector3 m_LastMousePos;
+    Ogre::SceneManager* m_SceneMgr;
+    Ogre::SceneNode** m_TargetNode;
+    Ogre::Camera* m_Camera;
+    Ogre::SceneNode* m_HandleNode;
+    Ogre::SceneNode* m_XHandle;
+    Ogre::SceneNode* m_YHandle;
     SelectionMode* m_CurrentSelectionMode;
 
     Event<SelectionMode> m_OnSelectionModeChanged;
 
     void setupHandles();
-    void OnSelectionChanged(SelectionMode currentMode);
+    void setVisible(bool visible);
+    void onSelectionChanged(SelectionMode currentMode);
     Axis getSelectedAxis(const Ogre::Vector2& mousePos);
     Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane);
 

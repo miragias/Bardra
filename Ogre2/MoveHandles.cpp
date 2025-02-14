@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "MoveHandles.h"
-#include <LinearMath/btDefaultMotionState.h>
 
 const float MoveHandles::HANDLE_SCALE = 0.01f;
 const float MoveHandles::HANDLE_LENGTH = 1.5f;
@@ -22,40 +21,40 @@ void MoveHandles::setupHandles() {
 	blueMaterial->getTechnique(0)->getPass(0)->setEmissive(Ogre::ColourValue(0.0, 0.0, 1.0));
 
     // Create main handle node
-    mHandleNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    m_HandleNode = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
 
     // Create X axis handle (red)
-    Ogre::Entity* xHandle = mSceneMgr->createEntity("handle_x", Ogre::SceneManager::PT_CUBE);
-    mXHandle = mHandleNode->createChildSceneNode();
-    mXHandle->attachObject(xHandle);
-    mXHandle->setScale(HANDLE_LENGTH, HANDLE_SCALE, HANDLE_SCALE);
-    mXHandle->setPosition(HANDLE_LENGTH / 2, 0, 0);
+    Ogre::Entity* xHandle = m_SceneMgr->createEntity("handle_x", Ogre::SceneManager::PT_CUBE);
+    m_XHandle = m_HandleNode->createChildSceneNode();
+    m_XHandle->attachObject(xHandle);
+    m_XHandle->setScale(HANDLE_LENGTH, HANDLE_SCALE, HANDLE_SCALE);
+    m_XHandle->setPosition(HANDLE_LENGTH / 2, 0, 0);
     xHandle->setMaterial(redMaterial);
 
     // Create Y axis handle (green)
-    Ogre::Entity* yHandle = mSceneMgr->createEntity("handle_y", Ogre::SceneManager::PT_CUBE);
-    mYHandle = mHandleNode->createChildSceneNode();
-    mYHandle->attachObject(yHandle);
-    mYHandle->setScale(HANDLE_SCALE, HANDLE_LENGTH, HANDLE_SCALE);
-    mYHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
+    Ogre::Entity* yHandle = m_SceneMgr->createEntity("handle_y", Ogre::SceneManager::PT_CUBE);
+    m_YHandle = m_HandleNode->createChildSceneNode();
+    m_YHandle->attachObject(yHandle);
+    m_YHandle->setScale(HANDLE_SCALE, HANDLE_LENGTH, HANDLE_SCALE);
+    m_YHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
     yHandle->setMaterial(greenMaterial);
 }
 
-void MoveHandles::update() {
-    if (*mTargetNode != nullptr) 
+void MoveHandles::Update() {
+    if (*m_TargetNode != nullptr) 
     {
-        mHandleNode->setPosition((*mTargetNode)->getPosition());
+        m_HandleNode->setPosition((*m_TargetNode)->getPosition());
     }
 }
 
-void MoveHandles::OnSelectionChanged(SelectionMode currentMode)
+void MoveHandles::onSelectionChanged(SelectionMode currentMode)
 {
     std::cout << "HAPPENED";
     setVisible(currentMode == SelectionMode::OBJECT);
 }
 
 MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
-    Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(
+    Ogre::Ray mouseRay = m_Camera->getCameraToViewportRay(
         mousePos.x,
         mousePos.y
     );
@@ -64,13 +63,13 @@ MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
     Axis selected = None;
 
     // Check intersection with each handle
-    std::pair<bool, float> xResult = mouseRay.intersects(mXHandle->_getWorldAABB());
+    std::pair<bool, float> xResult = mouseRay.intersects(m_XHandle->_getWorldAABB());
     if (xResult.first && xResult.second < closest_distance) {
         closest_distance = xResult.second;
         selected = X;
     }
 
-    std::pair<bool, float> yResult = mouseRay.intersects(mYHandle->_getWorldAABB());
+    std::pair<bool, float> yResult = mouseRay.intersects(m_YHandle->_getWorldAABB());
     if (yResult.first && yResult.second < closest_distance) {
         closest_distance = yResult.second;
         selected = Y;
@@ -79,7 +78,7 @@ MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
 }
 
 Ogre::Vector3 MoveHandles::getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane) {
-    Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mousePos.x, mousePos.y);
+    Ogre::Ray mouseRay = m_Camera->getCameraToViewportRay(mousePos.x, mousePos.y);
     std::pair<bool, float> result = mouseRay.intersects(plane);
     if (result.first) {
         return mouseRay.getPoint(result.second);
@@ -87,16 +86,16 @@ Ogre::Vector3 MoveHandles::getMouseWorldPos(const Ogre::Vector2& mousePos, const
     return Ogre::Vector3::ZERO;
 }
 
-bool MoveHandles::mousePressed(const Ogre::Vector2& mousePos) {
-    mSelectedAxis = getSelectedAxis(mousePos);
-    if (mSelectedAxis != None) {
-        mIsDragging = true;
+bool MoveHandles::MousePressed(const Ogre::Vector2& mousePos) {
+    m_SelectedAxis = getSelectedAxis(mousePos);
+    if (m_SelectedAxis != None) {
+        m_IsDragging = true;
 
         // Use the same plane calculation as mouseMove
-        Ogre::Vector3 cameraDir = mCamera->getDerivedDirection();
+        Ogre::Vector3 cameraDir = m_Camera->getDerivedDirection();
         Ogre::Vector3 moveDir;
 
-        switch (mSelectedAxis) {
+        switch (m_SelectedAxis) {
         case X: moveDir = Ogre::Vector3::UNIT_X; break;
         case Y: moveDir = Ogre::Vector3::UNIT_Y; break;
         case Z: moveDir = Ogre::Vector3::UNIT_Z; break;
@@ -108,22 +107,22 @@ bool MoveHandles::mousePressed(const Ogre::Vector2& mousePos) {
         planeNormal = planeNormal.crossProduct(moveDir);
         planeNormal.normalise();
 
-        Ogre::Plane dragPlane(planeNormal, (*mTargetNode)->getPosition());
-        mLastMousePos = getMouseWorldPos(mousePos, dragPlane);
+        Ogre::Plane dragPlane(planeNormal, (*m_TargetNode)->getPosition());
+        m_LastMousePos = getMouseWorldPos(mousePos, dragPlane);
 
         return true;
     }
     return false;
 }
 
-void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
-    if (!mIsDragging || mSelectedAxis == None) return;
+void MoveHandles::MouseMove(const Ogre::Vector2& mousePos) {
+    if (!m_IsDragging || m_SelectedAxis == None) return;
 
     // Create a plane perpendicular to the camera's view direction
-    Ogre::Vector3 cameraDir = mCamera->getDerivedDirection();
+    Ogre::Vector3 cameraDir = m_Camera->getDerivedDirection();
     Ogre::Vector3 moveDir;
 
-    switch (mSelectedAxis) {
+    switch (m_SelectedAxis) {
     case X: moveDir = Ogre::Vector3::UNIT_X; break;
     case Y: moveDir = Ogre::Vector3::UNIT_Y; break;
     case Z: moveDir = Ogre::Vector3::UNIT_Z; break;
@@ -136,47 +135,28 @@ void MoveHandles::mouseMove(const Ogre::Vector2& mousePos) {
     planeNormal = planeNormal.crossProduct(moveDir);
     planeNormal.normalise();
 
-    Ogre::Plane dragPlane(planeNormal, (*mTargetNode)->getPosition());
+    Ogre::Plane dragPlane(planeNormal, (*m_TargetNode)->getPosition());
     Ogre::Vector3 currentPos = getMouseWorldPos(mousePos, dragPlane);
 
     if (currentPos != Ogre::Vector3::ZERO) {
-        Ogre::Vector3 delta = currentPos - mLastMousePos;
+        Ogre::Vector3 delta = currentPos - m_LastMousePos;
         float projection = delta.dotProduct(moveDir);
         Ogre::Vector3 movement = moveDir * projection;
 
-        // Update physics body position
-        if (mPhysicsBody) {
-            btTransform trans;
-            mPhysicsBody->getMotionState()->getWorldTransform(trans);
-            btVector3 currentPhysicsPos = trans.getOrigin();
-            btVector3 newPos = currentPhysicsPos + btVector3(movement.x, movement.y, movement.z);
-
-            trans.setOrigin(newPos);
-            mPhysicsBody->setWorldTransform(trans);
-
-            // Reset velocity to prevent drift
-            mPhysicsBody->setLinearVelocity(btVector3(0, 0, 0));
-            mPhysicsBody->setAngularVelocity(btVector3(0, 0, 0));
-
-            // Optionally, you might want to activate the body
-            mPhysicsBody->activate(true);
-        }
-        else{
-            (*mTargetNode)->setPosition((*mTargetNode)->getPosition() + movement);
-        }
-        mLastMousePos = currentPos;
+		(*m_TargetNode)->setPosition((*m_TargetNode)->getPosition() + movement);
+        m_LastMousePos = currentPos;
     }
 }
 
-bool MoveHandles::mouseReleased() {
-    if (mIsDragging) {
-        mIsDragging = false;
-        mSelectedAxis = None;
+bool MoveHandles::MouseReleased() {
+    if (m_IsDragging) {
+        m_IsDragging = false;
+        m_SelectedAxis = None;
         return true;
     }
     return false;
 }
 
 void MoveHandles::setVisible(bool visible) {
-    mHandleNode->setVisible(visible);
+    m_HandleNode->setVisible(visible);
 }

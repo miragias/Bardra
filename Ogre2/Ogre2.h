@@ -5,10 +5,6 @@
 #include <OgreApplicationContext.h>
 #include <OgreShaderGenerator.h>
 
-#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include <BulletCollision/CollisionShapes/btBoxShape.h>
-#include <BulletCollision/CollisionShapes/btStaticPlaneShape.h>
-#include <btBulletDynamicsCommon.h>
 #include <LinearMath/btVector3.h>
 #include <LinearMath/btDefaultMotionState.h>
 
@@ -23,42 +19,42 @@
 
 
 struct TimelineEvent {
-    std::string label;
-    float start_time; // Start time in seconds
-    float duration;   // Duration in seconds
+    std::string Label;
+    float StartTime; // Start time in seconds
+    float Duration;   // Duration in seconds
 };
 
 struct Timeline {
-    float current_time = 0.0f; // Current playhead position
-    float zoom = 1.0f; // Zoom level (1.0 = normal, >1 = zoom in, <1 = zoom out)
+    float CurrentTime = 0.0f; // Current playhead position
+    float Zoom = 1.0f; // Zoom level (1.0 = normal, >1 = zoom in, <1 = zoom out)
 };
 class CustomApplicationContext : public OgreBites::ApplicationContext, public OgreBites::InputListener
 {
 public:
     CustomApplicationContext(const Ogre::String& appName) : OgreBites::ApplicationContext(appName) {}
     void SetCurrentlySelected(Ogre::SceneNode** newNode);
-    btDiscreteDynamicsWorld* dynamicsWorld;
-    btRigidBody* boxRigidBody;
-    MoveHandles* getMoveHandles() { return m_MoveHandles; }
+
     Ogre::Camera* Camera;
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
-    Ogre::ImGuiOverlay* ov;
+    Ogre::ImGuiOverlay* ImguiOverlayContext;
     Ogre::SceneNode** CurrentlySelectedNode;
+
     std::vector<Ogre::SceneNode*> GetWorld() const;
+    MoveHandles* getMoveHandles() { return m_MoveHandles; }
 
 private:
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
-    void ResizeQuad();
-    Ogre::ManualObject* manual;
+    void resizeQuad();
+    Ogre::ManualObject* m_ManualObject;
     MoveHandles* m_MoveHandles;
-	int sliderValue = 0; // Variable to store the slider value
-	float quadSize = 4.0f;
-    std::vector<TimelineEvent> events;
-    Timeline timeline;
-    std::vector<Ogre::Vector3> vertices;
-    std::vector<Ogre::Vector2> textureCoords;
-    std::vector<int> indices;
+    std::vector<TimelineEvent> m_TimelineEvents;
+	int m_SliderValue = 0; // Variable to store the slider value
+	float m_QuadSize = 4.0f;
+    Timeline m_Timeline;
+    std::vector<Ogre::Vector3> m_Vertices;
+    std::vector<Ogre::Vector2> m_TextureCoords;
+    std::vector<int> m_Indices;
     SelectionMode m_CurrentSelectionMode;
 
     void addVertexToQuad(const Ogre::Vector3& vertex,

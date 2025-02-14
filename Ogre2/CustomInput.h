@@ -9,12 +9,9 @@ class CustomInput : public OgreBites::InputListener
 public:
     CustomInput(CustomApplicationContext* ctx);
 
-    void focusNextObject();
-    Ogre::Vector3 getPointOnGround(float screenX, float screenY);
     bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
     bool mouseMoved(const OgreBites::MouseMotionEvent& evt) override;
     bool mousePressed(const OgreBites::MouseButtonEvent& evt) override;
-    void checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos);
     bool mouseReleased(const OgreBites::MouseButtonEvent& evt) override;
     bool mouseWheelRolled(const OgreBites::MouseWheelEvent& evt) override;
 
@@ -34,4 +31,8 @@ private:
     Ogre::Vector3 m_RotationCenter;
     bool m_WasRotatingLastFrame;
     size_t m_CurrentFocusIndex = 0;
+
+    void checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos);
+    void focusNextObject();
+    Ogre::Vector3 getPointOnGround(float screenX, float screenY);
 };

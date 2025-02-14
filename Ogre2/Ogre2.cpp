@@ -12,10 +12,8 @@ std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
 
 void CustomApplicationContext::setup()
 {
-    events = {};
-
+    m_TimelineEvents = {};
     Timeline timeline = { 2.0f, 1.0f };
-
 
     // Call the base class setup
     OgreBites::ApplicationContext::setup();
@@ -60,7 +58,7 @@ void CustomApplicationContext::setup()
 
     //imgui
     auto imguiOverlay = initialiseImGui();
-    ov = imguiOverlay;
+    ImguiOverlayContext = imguiOverlay;
 
     //Add the input listeners
     addInputListener(this);
@@ -78,9 +76,9 @@ void CustomApplicationContext::setup()
     Ogre::SceneNode* quadNode = createTexturedQuad(scnMgr);
     CurrentlySelectedNode = &quadNode;
 
-    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, boxRigidBody, &m_CurrentSelectionMode);
+    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, &m_CurrentSelectionMode);
 
-    OnSelectionChanged.Subscribe([this](Ogre::SceneNode** newNode) {
+    g_OnSelectionChangedEvent.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
 	});
 }
@@ -93,14 +91,14 @@ void CustomApplicationContext::SetCurrentlySelected(Ogre::SceneNode** newNode)
 
 Ogre::SceneNode* CustomApplicationContext::createTexturedQuad(Ogre::SceneManager* sceneMgr)
 {
-    manual = sceneMgr->createManualObject("Quad");
+    m_ManualObject = sceneMgr->createManualObject("Quad");
 
     ClearBuffersAndCreateDefault();
     updateQuad();
 
     // Create a scene node and attach the manual object
     Ogre::SceneNode* node = sceneMgr->getRootSceneNode()->createChildSceneNode();
-    node->attachObject(manual);
+    node->attachObject(m_ManualObject);
     m_ObjectNodes.push_back(node);
     return node;
 }
@@ -110,12 +108,12 @@ void CustomApplicationContext::addVertexToQuad(const Ogre::Vector3& vertex,
                                                const std::array<int,2> otherVertexIndices,
                                                size_t index)
 {
-    if (index > vertices.size()) 
+    if (index > m_Vertices.size()) 
     {
-        index = vertices.size();
+        index = m_Vertices.size();
     }
-    vertices.insert(vertices.begin() + index, vertex);
-    textureCoords.insert(textureCoords.begin() + index, texCoord);
+    m_Vertices.insert(m_Vertices.begin() + index, vertex);
+    m_TextureCoords.insert(m_TextureCoords.begin() + index, texCoord);
 
     //TODO(JohnMir): Improve this
     if(otherVertexIndices[0] == -1) return;
@@ -123,65 +121,65 @@ void CustomApplicationContext::addVertexToQuad(const Ogre::Vector3& vertex,
     //The indexes of the other 2 vertexes which are neighbours to the new incoming index
     for(int index : otherVertexIndices)
     {
-        indices.push_back(index);
+        m_Indices.push_back(index);
     }
-    indices.push_back(index); //The new index
+    m_Indices.push_back(index); //The new index
 }
 
 void CustomApplicationContext::SetSelectionTo(SelectionMode selectionToSetTo)
 {
     m_CurrentSelectionMode = selectionToSetTo;
-    OnSelectionModeChanged.Invoke(m_CurrentSelectionMode);
+    g_OnSelectionModeChangedEvent.Invoke(m_CurrentSelectionMode);
 }
 
 void CustomApplicationContext::ClearBuffersAndCreateDefault() 
 {
     // Clear previous vertices
-    vertices.clear();
-    textureCoords.clear();
-    indices.clear();
+    m_Vertices.clear();
+    m_TextureCoords.clear();
+    m_Indices.clear();
 
     // Default quad vertices
-    addVertexToQuad(Ogre::Vector3(-quadSize, quadSize, 0), Ogre::Vector2(0, 0.5f), {-1,-1} , vertices.size());   // Top-left
-    addVertexToQuad(Ogre::Vector3(quadSize, quadSize, 0), Ogre::Vector2(1,0.5f), {-1, -1}, vertices.size());    // Top-right
-    addVertexToQuad(Ogre::Vector3(-quadSize, -quadSize, 0), Ogre::Vector2(0,0), {-1, -1}, vertices.size());  // Bottom-left
-    addVertexToQuad(Ogre::Vector3(quadSize, -quadSize, 0), Ogre::Vector2(1, 0), {-1 , -1}, vertices.size());   // Bottom-right
+    addVertexToQuad(Ogre::Vector3(-m_QuadSize, m_QuadSize, 0), Ogre::Vector2(0, 0.5f), {-1,-1} , m_Vertices.size());   // Top-left
+    addVertexToQuad(Ogre::Vector3(m_QuadSize, m_QuadSize, 0), Ogre::Vector2(1,0.5f), {-1, -1}, m_Vertices.size());    // Top-right
+    addVertexToQuad(Ogre::Vector3(-m_QuadSize, -m_QuadSize, 0), Ogre::Vector2(0,0), {-1, -1}, m_Vertices.size());  // Bottom-left
+    addVertexToQuad(Ogre::Vector3(m_QuadSize, -m_QuadSize, 0), Ogre::Vector2(1, 0), {-1 , -1}, m_Vertices.size());   // Bottom-right
     
     // Define triangles dynamically based on vertex order
-    indices.push_back(0);
-    indices.push_back(1); // New vertex in the middle top
-    indices.push_back(2);
+    m_Indices.push_back(0);
+    m_Indices.push_back(1); // New vertex in the middle top
+    m_Indices.push_back(2);
     
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(3);
+    m_Indices.push_back(1);
+    m_Indices.push_back(2);
+    m_Indices.push_back(3);
 
 }
 
-void CustomApplicationContext::ResizeQuad()
+void CustomApplicationContext::resizeQuad()
 {
-    vertices[0] = Ogre::Vector3(-quadSize, quadSize, 0);
-    vertices[1] = Ogre::Vector3(quadSize, quadSize, 0);
-    vertices[2] = Ogre::Vector3(-quadSize, -quadSize, 0);
-    vertices[3] = Ogre::Vector3(quadSize, -quadSize, 0);
+    m_Vertices[0] = Ogre::Vector3(-m_QuadSize, m_QuadSize, 0);
+    m_Vertices[1] = Ogre::Vector3(m_QuadSize, m_QuadSize, 0);
+    m_Vertices[2] = Ogre::Vector3(-m_QuadSize, -m_QuadSize, 0);
+    m_Vertices[3] = Ogre::Vector3(m_QuadSize, -m_QuadSize, 0);
 }
 
 void CustomApplicationContext::updateQuad()
 {
-    manual->clear();  // Clear previous shape
-    manual->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    m_ManualObject->clear();  // Clear previous shape
+    m_ManualObject->begin("Hey", Ogre::RenderOperation::OT_TRIANGLE_LIST);
     
-    for (size_t i = 0; i < vertices.size(); ++i) {
-        manual->position(vertices[i]);   // Use updated vertex positions
-        manual->textureCoord(textureCoords[i]);
+    for (size_t i = 0; i < m_Vertices.size(); ++i) {
+        m_ManualObject->position(m_Vertices[i]);   // Use updated vertex positions
+        m_ManualObject->textureCoord(m_TextureCoords[i]);
     }
 
-    for (size_t i = 0; i < indices.size(); ++i) 
+    for (size_t i = 0; i < m_Indices.size(); ++i) 
     {
-        manual->index(indices[i]);
+        m_ManualObject->index(m_Indices[i]);
     }
 
-    manual->end();
+    m_ManualObject->end();
 }
 
 void CustomApplicationContext::createMaterialWithTexture()
@@ -216,18 +214,18 @@ Ogre::SceneNode* CustomApplicationContext::CreateEntity(const std::string name)
 void CustomApplicationContext::ShowSliderExample()
 {
     ImGui::Begin("Slider Example"); // Create a new window
-    ImGui::SliderInt("Adjust Value", &sliderValue, -50, 50); // Create slider
-    if (ImGui::SliderFloat("Quad Size", &quadSize, 0, 25)) 
+    ImGui::SliderInt("Adjust Value", &m_SliderValue, -50, 50); // Create slider
+    if (ImGui::SliderFloat("Quad Size", &m_QuadSize, 0, 25)) 
     {
         ClearBuffersAndCreateDefault();
         updateQuad();
     }
     if (ImGui::Button("Add vertex on top side")) 
     {
-        addVertexToQuad(Ogre::Vector3(0, quadSize + 2, 0), Ogre::Vector2(0.5, 1), {0,1}, 4);
+        addVertexToQuad(Ogre::Vector3(0, m_QuadSize + 2, 0), Ogre::Vector2(0.5, 1), {0,1}, 4);
         updateQuad();
     }
-    ImGui::Text("Current Value: %d", sliderValue); // Display value
+    ImGui::Text("Current Value: %d", m_SliderValue); // Display value
     ImGui::End(); // End window
     ImGui::Begin("Timeline");
 
@@ -235,7 +233,7 @@ void CustomApplicationContext::ShowSliderExample()
     ImVec2 canvas_size = ImVec2(ImGui::GetContentRegionAvail().x, 150);
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-    float timeline_length = canvas_size.x * timeline.zoom;
+    float timeline_length = canvas_size.x * m_Timeline.Zoom;
     float y_mid = canvas_pos.y + canvas_size.y / 2;
 
     // Draw timeline background
@@ -255,20 +253,20 @@ void CustomApplicationContext::ShowSliderExample()
     // Handle playhead movement on click
     if (is_clicked) {
         ImVec2 mouse_pos = ImGui::GetMousePos();
-        timeline.current_time = ((mouse_pos.x - canvas_pos.x) / timeline_length) * 10.0f; // Adjusted for 10 sec range
+        m_Timeline.CurrentTime = ((mouse_pos.x - canvas_pos.x) / timeline_length) * 10.0f; // Adjusted for 10 sec range
     }
 
     // Draw playhead (red vertical line)
-    float playhead_x = canvas_pos.x + (timeline.current_time / 10.0f) * timeline_length;
+    float playhead_x = canvas_pos.x + (m_Timeline.CurrentTime / 10.0f) * timeline_length;
     draw_list->AddLine(ImVec2(playhead_x, canvas_pos.y), ImVec2(playhead_x, canvas_pos.y + canvas_size.y), IM_COL32(255, 0, 0, 255), 2.0f);
 
     // Draw events (blocks on the timeline)
-    for (const auto& event : events) {
-        float start_x = canvas_pos.x + (event.start_time / 10.0f) * timeline_length;
-        float end_x = start_x + (event.duration / 10.0f) * timeline_length;
+    for (const auto& event : m_TimelineEvents) {
+        float start_x = canvas_pos.x + (event.StartTime / 10.0f) * timeline_length;
+        float end_x = start_x + (event.Duration / 10.0f) * timeline_length;
         draw_list->AddRectFilled(ImVec2(start_x, y_mid - 10), ImVec2(end_x, y_mid + 10), IM_COL32(0, 255, 0, 255));
         ImGui::SetCursorScreenPos(ImVec2(start_x, y_mid + 15));
-        ImGui::Text("%s", event.label.c_str());
+        ImGui::Text("%s", event.Label.c_str());
     }
 
     //Change mode
@@ -298,11 +296,11 @@ bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
     // Update move handles
     if (m_MoveHandles) 
     {
-        m_MoveHandles->update();
+        m_MoveHandles->Update();
     }
 
     //Imgui
-    ov->NewFrame();
+    ImguiOverlayContext->NewFrame();
     ImGui::ShowDemoWindow();
     ShowSliderExample();
     return true;

@@ -48,7 +48,7 @@ void CustomInput::focusNextObject()
 
     // Update the currently selected node
     *m_CurrentlySelectedNode = targetNode;
-    OnSelectionChanged.Invoke(&targetNode);
+    g_OnSelectionChangedEvent.Invoke(&targetNode);
 }
 
 Ogre::Vector3 CustomInput::getPointOnGround(float screenX, float screenY)
@@ -122,7 +122,7 @@ bool CustomInput::mouseMoved(const OgreBites::MouseMotionEvent& evt)
     }
 
     if (m_MoveHandles) {
-        m_MoveHandles->mouseMove(currentPos);
+        m_MoveHandles->MouseMove(currentPos);
     }
 
     m_LastMousePos = currentPos;
@@ -150,7 +150,7 @@ bool CustomInput::mousePressed(const OgreBites::MouseButtonEvent& evt)
     }
 
     if (m_MoveHandles && evt.button == OgreBites::BUTTON_LEFT) {
-        return m_MoveHandles->mousePressed(m_LastMousePos);
+        return m_MoveHandles->MousePressed(m_LastMousePos);
     }
     return true;
 }
@@ -184,7 +184,7 @@ void CustomInput::checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos)
     if (closestNode)
     {
         (*m_CurrentlySelectedNode) = closestNode;
-        OnSelectionChanged.Invoke(&closestNode);
+        g_OnSelectionChangedEvent.Invoke(&closestNode);
     }
 }
 
@@ -198,7 +198,7 @@ bool CustomInput::mouseReleased(const OgreBites::MouseButtonEvent& evt)
     }
 
     if (m_MoveHandles && evt.button == OgreBites::BUTTON_LEFT) {
-        return m_MoveHandles->mouseReleased();
+        return m_MoveHandles->MouseReleased();
     }
     return true;
 }

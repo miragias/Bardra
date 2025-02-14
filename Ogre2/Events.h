@@ -4,6 +4,5 @@
 #include "EventSystem.h"
 #include "Common.h"
 
-static Event<Ogre::SceneNode**> OnSelectionChanged;
-static Event<SelectionMode> OnSelectionModeChanged;
-static Event<int> Doo;
+static Event<Ogre::SceneNode**> g_OnSelectionChangedEvent;
+static Event<SelectionMode> g_OnSelectionModeChangedEvent;
