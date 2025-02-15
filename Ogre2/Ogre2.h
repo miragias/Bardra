@@ -61,6 +61,7 @@ private:
     std::vector<Ogre::Vector3> m_Vertices;
     std::vector<Ogre::Vector2> m_TextureCoords;
     std::vector<int> m_Indices;
+    std::unordered_map<Ogre::SceneNode*, int> m_VertexNodeToIndexInArray;
     SelectionMode m_CurrentSelectionMode;
 
     void CheckDoAppropriateSystem(SelectionMode selectionMode);

@@ -68,7 +68,7 @@ void CustomApplicationContext::setup()
     Ogre::SceneNode* quadNode = createTexturedQuad(scnMgr);
     CurrentlySelectedNode = &quadNode;
 
-    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, &m_CurrentSelectionMode);
+    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, &m_CurrentSelectionMode, &m_VertexNodeToIndexInArray , &m_Vertices);
 
     g_OnSelectionChangedEvent.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
@@ -112,6 +112,7 @@ void CustomApplicationContext::createVertexNodes()
 {
     int a = 0;
     m_VerticesNodesParent = CreateEntity("vertex_parent");
+    m_VertexNodeToIndexInArray.clear();
 
     for(auto vertexPosition : m_Vertices)
     {
@@ -119,7 +120,8 @@ void CustomApplicationContext::createVertexNodes()
         auto vertexSize = Ogre::Vector3(scaleAmount, scaleAmount, scaleAmount);
         Ogre::Entity* entity = SceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
         entity->setMaterialName("Examples/Rockwall");
-        CreateEntity(std::to_string(a), &vertexPosition, m_VerticesNodesParent, entity, &vertexSize);
+        auto vertexSceneNode = CreateEntity(std::to_string(a), &vertexPosition, m_VerticesNodesParent, entity, &vertexSize);
+        m_VertexNodeToIndexInArray[vertexSceneNode] = a;
         a++;
     }
 }
@@ -295,6 +297,10 @@ void CustomApplicationContext::ShowSliderExample()
 {
     ImGui::Begin("Slider Example"); // Create a new window
     ImGui::SliderInt("Adjust Value", &m_SliderValue, -50, 50); // Create slider
+    if (ImGui::Button("Update quad")) 
+    {
+        updateQuad();
+    }
     if (ImGui::SliderFloat("Quad Size", &m_QuadSize, 0, 25)) 
     {
         ClearBuffersAndCreateDefault();

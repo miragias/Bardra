@@ -144,8 +144,14 @@ void MoveHandles::MouseMove(const Ogre::Vector2& mousePos) {
         Ogre::Vector3 delta = currentPos - m_LastMousePos;
         float projection = delta.dotProduct(moveDir);
         Ogre::Vector3 movement = moveDir * projection;
-
 		(*m_TargetNode)->setPosition((*m_TargetNode)->getPosition() + movement);
+        //TODO(JohnMir): Use the mode here we do not need the if
+        auto it = m_VertexNodeToIndex->find(*m_TargetNode);
+        if(it != m_VertexNodeToIndex->end())
+        {
+            int index = (*m_VertexNodeToIndex)[*m_TargetNode];
+            (*m_Vertices)[index] = (*m_TargetNode)->getPosition();
+        }
         m_LastMousePos = currentPos;
     }
 }

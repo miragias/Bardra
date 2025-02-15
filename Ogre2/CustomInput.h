@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "MoveHandles.h"
 #include "SelectionContext.h"
+#include <unordered_map>
 
 class CustomInput : public OgreBites::InputListener
 {

@@ -6,12 +6,16 @@
 class MoveHandles {
 public:
     MoveHandles(Ogre::SceneManager* sceneMgr,
-        Ogre::SceneNode** targetNode, Ogre::Camera* camera, SelectionMode* currentSelectionmode)
+        Ogre::SceneNode** targetNode, Ogre::Camera* camera, SelectionMode* currentSelectionmode,
+            std::unordered_map<Ogre::SceneNode*, int>* vertexToNodeIndex,
+            std::vector<Ogre::Vector3>* vertices)
         : m_SceneMgr(sceneMgr)
         , m_TargetNode(targetNode)
         , m_Camera(camera)
         , m_SelectedAxis(None)
         , m_IsDragging(false)
+        , m_VertexNodeToIndex(vertexToNodeIndex)
+        , m_Vertices(vertices)
     {
         setupHandles();
         g_OnSelectionModeChangedEvent.Subscribe([this](SelectionMode newNode) {
@@ -47,7 +51,8 @@ private:
     SelectionMode* m_CurrentSelectionMode;
 
     Event<SelectionMode> m_OnSelectionModeChanged;
-
+    std::unordered_map<Ogre::SceneNode*, int>* m_VertexNodeToIndex;
+    std::vector<Ogre::Vector3>* m_Vertices;
     void setupHandles();
     void setVisible(bool visible);
     void onSelectionChanged(SelectionMode currentMode);
