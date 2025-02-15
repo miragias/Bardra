@@ -146,17 +146,20 @@ void CustomInput::checkAllNodesToChangeCurrentlySelected(Ogre::Vector2 mousePos)
     float minDistance = std::numeric_limits<float>::infinity();
     Ogre::SceneNode* closestNode = nullptr;
 
-    for (size_t i = 0; i < m_World.size(); i++)
+    auto selectableContex = m_SelectionContext->GetCurrentContext();
+    for(auto selectableNode : *selectableContex)
     {
-        auto iter = m_World[i];
         // Check if the ray intersects the object's AABB
-        std::pair<bool, float> intersect = mouseRay.intersects(iter->_getWorldAABB());
+        auto iteratingBoundingBox = selectableNode->_getWorldAABB();
+        //TODO(JohnMir): Get this from the context
+        //iteratingBoundingBox.scale(Ogre::Vector3(100,100,100));
+        std::pair<bool, float> intersect = mouseRay.intersects(iteratingBoundingBox);
         if (intersect.first)
         {
             if (intersect.second < minDistance)
             {
                 minDistance = intersect.second;
-                closestNode = iter;
+                closestNode = selectableNode;
             }
         }
     }

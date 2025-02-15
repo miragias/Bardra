@@ -6,3 +6,4 @@
 
 static Event<Ogre::SceneNode**> g_OnSelectionChangedEvent;
 static Event<SelectionMode> g_OnSelectionModeChangedEvent;
+static Event<Ogre::SceneNode*> g_OnNodeDeleted;

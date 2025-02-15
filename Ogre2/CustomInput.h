@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "MoveHandles.h"
+#include "SelectionContext.h"
 
 class CustomInput : public OgreBites::InputListener
 {
@@ -12,20 +13,20 @@ public:
                 Ogre::SceneManager* sceneManager,
                 std::vector<Ogre::SceneNode*> world,
                 Ogre::RenderWindow* renderWindow,
-				std::function<void()> shutDownFunction)
+				std::function<void()> shutDownFunction,
+                SelectionContext* selectionContext)
     : m_MoveHandles(moveHandles)
     , m_CurrentlySelectedNode(currentlySelectedNode)
     , m_Camera(camera)
     , m_CameraNode(cameraNode)
     , m_LastMousePos(Ogre::Vector2::ZERO)
     , m_CameraDistance(100.0f)
-    , m_IsCameraMoving(false)
-    , m_IsRotating(false)
     , m_RotationCenter(Ogre::Vector3::ZERO)
     , m_SceneMgr(sceneManager)
     , m_World(world)
     , m_ShutDownAction(shutDownFunction)
     , m_RenderWindow(renderWindow)
+    , m_SelectionContext(selectionContext)
     {
         m_CameraNode->setPosition(0, 0, m_CameraDistance);
         m_CameraNode->lookAt(m_RotationCenter, Ogre::Node::TS_WORLD);
@@ -39,6 +40,7 @@ public:
     bool mouseWheelRolled(const OgreBites::MouseWheelEvent& evt) override;
 
 private:
+    SelectionContext* m_SelectionContext;
     Ogre::RenderWindow* m_RenderWindow;
     MoveHandles* m_MoveHandles;
     Ogre::Camera* m_Camera;

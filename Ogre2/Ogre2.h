@@ -15,6 +15,7 @@
 #include <OgreImGuiInputListener.h>
 #include "MoveHandles.h"
 #include "CustomInput.h"
+#include "SelectionContext.h"
 #include "Events.h"
 
 
@@ -23,6 +24,7 @@ struct TimelineEvent {
     float StartTime; // Start time in seconds
     float Duration;   // Duration in seconds
 };
+
 
 struct Timeline {
     float CurrentTime = 0.0f; // Current playhead position
@@ -45,6 +47,7 @@ private:
     Ogre::ImGuiOverlay* ImguiOverlayContext;
     Ogre::SceneNode** CurrentlySelectedNode;
 
+    SelectionContext* m_SelectionContext;
     Ogre::SceneNode* m_VerticesNodesParent;
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
     void resizeQuad();
@@ -59,6 +62,7 @@ private:
     std::vector<Ogre::Vector2> m_TextureCoords;
     std::vector<int> m_Indices;
     SelectionMode m_CurrentSelectionMode;
+
     void CheckDoAppropriateSystem(SelectionMode selectionMode);
     void DestroySceneNode(Ogre::SceneNode* node);
     void createVertexNodes();

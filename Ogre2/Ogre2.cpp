@@ -4,6 +4,7 @@
 #include "Events.h"
 #include "Ogre2.h"
 #include "Common.h"
+#include "SelectionContext.h"
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
     return m_ObjectNodes;
@@ -73,10 +74,12 @@ void CustomApplicationContext::setup()
         SetCurrentlySelected(newNode);
 	});
 
+    m_SelectionContext = new SelectionContext();
+
     //Custom Input
     m_CustomInput = new CustomInput(m_MoveHandles, Camera, camNode,
                                     CurrentlySelectedNode, SceneManager, m_ObjectNodes,
-                                    this->getRenderWindow(), [this](){this->shutdown();});
+                                    this->getRenderWindow(), [this](){this->shutdown();}, m_SelectionContext);
     addInputListener(m_CustomInput);
 
     g_OnSelectionModeChangedEvent.Subscribe([this](SelectionMode newMode){CheckDoAppropriateSystem(newMode);});
@@ -84,13 +87,23 @@ void CustomApplicationContext::setup()
 
 void CustomApplicationContext::CheckDoAppropriateSystem(SelectionMode selectionMode)
 {
+    m_SelectionContext->ClearContext();
     switch(m_CurrentSelectionMode)
     {
         case OBJECT:
             DestroySceneNode(m_VerticesNodesParent);
+            for(auto node : m_ObjectNodes)
+            {
+                m_SelectionContext->AddToContext(static_cast<Ogre::SceneNode*>(node));
+            }
             break;
         case VERTEX:
             createVertexNodes();
+            auto childrenVertices = m_VerticesNodesParent->getChildren();
+            for(auto child : childrenVertices)
+            {
+                m_SelectionContext->AddToContext(static_cast<Ogre::SceneNode*>(child));
+            }
             break;
     }
 }
@@ -114,6 +127,7 @@ void CustomApplicationContext::createVertexNodes()
 void CustomApplicationContext::DestroySceneNode(Ogre::SceneNode* node)
 {
    if (!node) return; // Avoid null pointer access
+   g_OnNodeDeleted.Invoke(node);
 
     // 1. Remove all child nodes first
     while (node->numChildren() > 0) {

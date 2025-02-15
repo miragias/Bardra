@@ -49,8 +49,10 @@ void MoveHandles::Update() {
 
 void MoveHandles::onSelectionChanged(SelectionMode currentMode)
 {
+    /*
     std::cout << "HAPPENED";
     setVisible(currentMode == SelectionMode::OBJECT);
+    */
 }
 
 MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
