@@ -5,6 +5,9 @@
 #include "Ogre2.h"
 #include "Common.h"
 #include "SelectionContext.h"
+#include "UserInput.h"
+#include "ClickObjectHandler.h"
+#include "Input.h"
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
     return m_ObjectNodes;
@@ -73,6 +76,12 @@ void CustomApplicationContext::setup()
     g_OnSelectionChangedEvent.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
 	});
+
+    // THE NEW STUFF
+    m_UserInputSystem = new UserInput();
+    addInputListener(m_UserInputSystem);
+
+    m_ClickObjectHandler = new ClickObjectHandler();
 
     m_SelectionContext = new SelectionContext();
 
@@ -366,6 +375,13 @@ void CustomApplicationContext::ShowSliderExample()
 
 bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+    m_UserInputSystem->Cleanup();
+
+    //Click handling
+    m_ClickObjectHandler->Cleanup();
+    m_ClickObjectHandler->GetFrameCommandsForInput(m_UserInputSystem, *m_SelectionContext->GetCurrentContext(), Camera);
+
+    /*
     // Update move handles
     if (m_MoveHandles) 
     {
@@ -376,6 +392,7 @@ bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
     ImguiOverlayContext->NewFrame();
     ImGui::ShowDemoWindow();
     ShowSliderExample();
+    */
     return true;
 }
 

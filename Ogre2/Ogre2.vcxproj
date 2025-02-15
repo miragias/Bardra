@@ -146,7 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClickObjectHandler.cpp" />
     <ClCompile Include="CustomInput.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MoveHandles.cpp" />
     <ClCompile Include="Ogre2.cpp" />
     <ClCompile Include="SelectionContext.cpp" />
@@ -156,8 +158,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="UserInput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClickObjectHandler.h" />
     <ClInclude Include="CustomInput.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="EventSystem.h" />
@@ -165,6 +169,7 @@
     <ClInclude Include="Ogre2.h" />
     <ClInclude Include="SelectionContext.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UserInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
