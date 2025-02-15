@@ -21,3 +21,6 @@ struct MoveNodeCommand
     Ogre::Vector2 MoveBy;
 };
 
+struct AppContext{
+    Ogre::SceneNode* CurrentlySelectedNode;
+};

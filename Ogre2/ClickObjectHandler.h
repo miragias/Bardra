@@ -12,10 +12,11 @@ class ClickObjectHandler
         void Cleanup();
         void GetFrameCommandsForInput(UserInput* input,
                 const Selectables selectableObjects, Ogre::Camera* camera);
+        SelectNodeCommand* GetSelectCommand();
+        MoveNodeCommand* GetMoveCommand();
     private:
         std::pair<bool , SelectNodeCommand> SelectionCommand;
         std::pair<bool, MoveNodeCommand> MoveCommand;
-
         void TryClickOnSelectableObject(Ogre::Vector2 clickPosition, const Selectables selectableObjects, const Ogre::Camera* camera);
 };
 

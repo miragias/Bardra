@@ -7,6 +7,7 @@
 #include "SelectionContext.h"
 #include "UserInput.h"
 #include "ClickObjectHandler.h"
+#include "SelectionSystem.h"
 #include "Input.h"
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
@@ -15,6 +16,7 @@ std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
 
 void CustomApplicationContext::setup()
 {
+    m_TheGreatContext = {};
     m_TimelineEvents = {};
     Timeline timeline = { 2.0f, 1.0f };
 
@@ -380,8 +382,8 @@ bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
     //Click handling
     m_ClickObjectHandler->Cleanup();
     m_ClickObjectHandler->GetFrameCommandsForInput(m_UserInputSystem, *m_SelectionContext->GetCurrentContext(), Camera);
+    m_SelectionSystem->CheckUpdateSelectedNode(m_ClickObjectHandler, *m_TheGreatContext);
 
-    /*
     // Update move handles
     if (m_MoveHandles) 
     {
@@ -392,7 +394,6 @@ bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
     ImguiOverlayContext->NewFrame();
     ImGui::ShowDemoWindow();
     ShowSliderExample();
-    */
     return true;
 }
 

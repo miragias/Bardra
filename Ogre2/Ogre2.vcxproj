@@ -152,6 +152,7 @@
     <ClCompile Include="MoveHandles.cpp" />
     <ClCompile Include="Ogre2.cpp" />
     <ClCompile Include="SelectionContext.cpp" />
+    <ClCompile Include="SelectionSystem.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.pch</PrecompiledHeaderOutputFile>
@@ -168,6 +169,7 @@
     <ClInclude Include="MoveHandles.h" />
     <ClInclude Include="Ogre2.h" />
     <ClInclude Include="SelectionContext.h" />
+    <ClInclude Include="SelectionSystem.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UserInput.h" />
   </ItemGroup>

@@ -8,6 +8,18 @@ void ClickObjectHandler::Cleanup()
     MoveCommand.first = false;
 }
 
+SelectNodeCommand* ClickObjectHandler::GetSelectCommand()
+{
+    if(!SelectionCommand.first) return nullptr;
+    return &SelectionCommand.second;
+}
+
+MoveNodeCommand* ClickObjectHandler::GetMoveCommand()
+{
+    if(!MoveCommand.first) return nullptr;
+    return &MoveCommand.second;
+}
+
 void ClickObjectHandler::GetFrameCommandsForInput(UserInput* input,
 		const Selectables selectableObjects, Ogre::Camera* camera)
 {

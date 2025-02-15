@@ -17,8 +17,10 @@
 #include "CustomInput.h"
 #include "SelectionContext.h"
 #include "Events.h"
+#include "SelectionSystem.h"
 #include "UserInput.h"
 #include "ClickObjectHandler.h"
+#include "Common.h"
 
 
 struct TimelineEvent {
@@ -38,9 +40,11 @@ public:
     CustomApplicationContext(const Ogre::String& appName) : OgreBites::ApplicationContext(appName) {}
 
 private:
+    //The new stuff
     UserInput* m_UserInputSystem;
     ClickObjectHandler* m_ClickObjectHandler;
-
+    SelectionSystem* m_SelectionSystem;
+    AppContext* m_TheGreatContext;
 
     void SetCurrentlySelected(Ogre::SceneNode** newNode);
     std::vector<Ogre::SceneNode*> GetWorld() const;
