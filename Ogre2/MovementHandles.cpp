@@ -19,10 +19,15 @@ void MovementHandles::PlaceTo(Ogre::Vector3 targetPos)
 
 Axis MovementHandles::GetSelectedAxis(const Ogre::Vector2& mousePos, const Ogre::Camera* camera) const {
 
+    auto ms = Ogre::Vector2(
+        mousePos.x / float(m_RenderWindow->getWidth()),
+        mousePos.y / float(m_RenderWindow->getHeight())
+    );
+
     Ogre::Ray mouseRay = camera->getCameraToViewportRay
     (
-        mousePos.x,
-        mousePos.y
+        ms.x,
+        ms.y
     );
     std::cout << "mouse pos" << mousePos << "\n";
 

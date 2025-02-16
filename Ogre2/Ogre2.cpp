@@ -27,7 +27,7 @@ void CustomApplicationContext::setup()
     Ogre::SceneManager* scnMgr = getRoot()->createSceneManager();
     SceneManager = scnMgr;
 
-    m_MovementHandles = new MovementHandles(scnMgr);
+    m_MovementHandles = new MovementHandles(scnMgr, this->getRenderWindow());
     m_MovementHandles->SetActive(true);
     m_TheGreatContext = {nullptr, m_MovementHandles->HandlesParent, {}, None};
 

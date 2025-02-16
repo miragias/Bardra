@@ -7,7 +7,7 @@ class MovementHandles
     const float HANDLE_SCALE = 0.01f;
     const float HANDLE_LENGTH = 1.5f;
 public:
-    MovementHandles(Ogre::SceneManager* sceneManager)
+    MovementHandles(Ogre::SceneManager* sceneManager, Ogre::RenderWindow* renderWindow)
     {            
         Ogre::MaterialPtr baseMaterial = Ogre::MaterialManager::getSingleton().getByName("ColorMaterial");
 
@@ -41,6 +41,8 @@ public:
         m_YHandle->setScale(HANDLE_SCALE, HANDLE_LENGTH, HANDLE_SCALE);
         m_YHandle->setPosition(0, HANDLE_LENGTH / 2, 0);
         yHandle->setMaterial(greenMaterial);
+
+        m_RenderWindow = renderWindow;
     }
     void SetActive(bool visibility);
     void PlaceTo(Ogre::Vector3 targetPos);
@@ -49,6 +51,7 @@ public:
     Ogre::SceneNode* HandlesParent;
         
 private:
+    Ogre::RenderWindow* m_RenderWindow;
     Ogre::SceneNode* m_XHandle;
     Ogre::SceneNode* m_YHandle;
     bool m_IsActive;

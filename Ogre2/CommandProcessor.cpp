@@ -4,7 +4,7 @@
 
 void CommandProcessor::ProcessCommand(MoveNodeCommand moveNodeCommand)
 {
-    std::cout << "Process Move";
+    std::cout << "Process Move: " << moveNodeCommand.MoveBy << "\n";
     moveNodeCommand.NodeMoving->setPosition(moveNodeCommand.MoveBy);
 }
 
