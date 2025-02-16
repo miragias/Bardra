@@ -55,7 +55,7 @@ void MoveHandles::onSelectionChanged(SelectionMode currentMode)
     */
 }
 
-MoveHandles::Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
+Axis MoveHandles::getSelectedAxis(const Ogre::Vector2& mousePos) {
     Ogre::Ray mouseRay = m_Camera->getCameraToViewportRay(
         mousePos.x,
         mousePos.y
@@ -100,7 +100,6 @@ bool MoveHandles::MousePressed(const Ogre::Vector2& mousePos) {
         switch (m_SelectedAxis) {
         case X: moveDir = Ogre::Vector3::UNIT_X; break;
         case Y: moveDir = Ogre::Vector3::UNIT_Y; break;
-        case Z: moveDir = Ogre::Vector3::UNIT_Z; break;
         default: return false;
         }
 
@@ -127,7 +126,6 @@ void MoveHandles::MouseMove(const Ogre::Vector2& mousePos) {
     switch (m_SelectedAxis) {
     case X: moveDir = Ogre::Vector3::UNIT_X; break;
     case Y: moveDir = Ogre::Vector3::UNIT_Y; break;
-    case Z: moveDir = Ogre::Vector3::UNIT_Z; break;
     default: return;
     }
 

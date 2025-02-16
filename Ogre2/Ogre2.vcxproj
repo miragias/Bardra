@@ -147,9 +147,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClickObjectHandler.cpp" />
+    <ClCompile Include="CommandProcessor.cpp" />
     <ClCompile Include="CustomInput.cpp" />
-    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MoveHandles.cpp" />
+    <ClCompile Include="MovementHandles.cpp" />
     <ClCompile Include="Ogre2.cpp" />
     <ClCompile Include="SelectionContext.cpp" />
     <ClCompile Include="SelectionSystem.cpp" />
@@ -163,10 +164,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClickObjectHandler.h" />
+    <ClInclude Include="CommandProcessor.h" />
     <ClInclude Include="CustomInput.h" />
     <ClInclude Include="Events.h" />
     <ClInclude Include="EventSystem.h" />
     <ClInclude Include="MoveHandles.h" />
+    <ClInclude Include="MovementHandles.h" />
     <ClInclude Include="Ogre2.h" />
     <ClInclude Include="SelectionContext.h" />
     <ClInclude Include="SelectionSystem.h" />

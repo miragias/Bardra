@@ -8,6 +8,7 @@ void SelectionSystem::CheckUpdateSelectedNode(ClickObjectHandler* clickHandler, 
     auto setSelectionTo = clickHandler->GetSelectCommand();
     if(setSelectionTo)
     {
+        std::cout <<"Set selection" << setSelectionTo << "\n";
         context.CurrentlySelectedNode = setSelectionTo->NodeSelected;
     }
 }

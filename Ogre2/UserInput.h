@@ -5,6 +5,7 @@ class UserInput : public OgreBites::InputListener
 {
 public:
     UserInput() {};
+    bool IsDragging();
 
     void Cleanup();
     bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
@@ -13,10 +14,12 @@ public:
     bool mouseReleased(const OgreBites::MouseButtonEvent& evt) override;
     bool mouseWheelRolled(const OgreBites::MouseWheelEvent& evt) override;
 
-    const OgreBites::MouseMotionEvent* LastMouseMovedEvent;
-    const OgreBites::MouseButtonEvent* LastMouseClickedEvent;
-    const OgreBites::MouseButtonEvent* LastMouseReleasedEvent;
-    const OgreBites::MouseWheelEvent* LastMouseWheelEvent;
-    const OgreBites::KeyboardEvent* LastKeyboardEvent;
+    std::pair<bool, OgreBites::MouseMotionEvent> LastMouseMovedEvent;
+    std::pair<bool, OgreBites::MouseButtonEvent> LastMouseClickedEvent;
+    std::pair<bool, OgreBites::MouseButtonEvent> LastMouseReleasedEvent;
+    std::pair<bool, OgreBites::MouseWheelEvent> LastMouseWheelEvent;
+    std::pair<bool, OgreBites::KeyboardEvent> LastKeyboardEvent;
+private:
+    bool m_IsDragging = false;
 };
 

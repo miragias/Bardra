@@ -23,13 +23,6 @@ public:
 		});
     }
 
-    enum Axis {
-        None,
-        X,
-        Y,
-        Z
-    };
-
     void Update();
     bool MousePressed(const Ogre::Vector2& mousePos);
     bool MouseReleased();
@@ -58,5 +51,4 @@ private:
     void onSelectionChanged(SelectionMode currentMode);
     Axis getSelectedAxis(const Ogre::Vector2& mousePos);
     Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane);
-
 };

@@ -1,6 +1,5 @@
+#include "MovementHandles.h"
 #include "stdafx.h"
-#include "MoveHandles.h"
-#include "CustomInput.h"
 #include "Events.h"
 #include "Ogre2.h"
 #include "Common.h"
@@ -8,7 +7,8 @@
 #include "UserInput.h"
 #include "ClickObjectHandler.h"
 #include "SelectionSystem.h"
-#include "Input.h"
+#include "CommandProcessor.h"
+#include "MovementHandles.h"
 
 std::vector<Ogre::SceneNode*> CustomApplicationContext::GetWorld() const{
     return m_ObjectNodes;
@@ -26,6 +26,10 @@ void CustomApplicationContext::setup()
     // Create the scene manager
     Ogre::SceneManager* scnMgr = getRoot()->createSceneManager();
     SceneManager = scnMgr;
+
+    m_MovementHandles = new MovementHandles(scnMgr);
+    m_MovementHandles->SetActive(true);
+    m_TheGreatContext = {nullptr, m_MovementHandles->HandlesParent, {}, None};
 
     // Register the scene with the RTSS (Real-Time Shader System)
     Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
@@ -56,6 +60,7 @@ void CustomApplicationContext::setup()
     //imgui
     auto imguiOverlay = initialiseImGui();
     ImguiOverlayContext = imguiOverlay;
+    m_CommandProcessor = new CommandProcessor();
 
     //Add the input listeners
     addInputListener(this);
@@ -71,9 +76,11 @@ void CustomApplicationContext::setup()
 
     createMaterialWithTexture();
     Ogre::SceneNode* quadNode = createTexturedQuad(scnMgr);
+    m_TheGreatContext.Selectables.push_back(quadNode);
+    m_TheGreatContext.CurrentlySelectedNode = quadNode;
     CurrentlySelectedNode = &quadNode;
 
-    m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, &m_CurrentSelectionMode, &m_VertexNodeToIndexInArray , &m_Vertices);
+    //m_MoveHandles = new MoveHandles(scnMgr, CurrentlySelectedNode, cam, &m_CurrentSelectionMode, &m_VertexNodeToIndexInArray , &m_Vertices);
 
     g_OnSelectionChangedEvent.Subscribe([this](Ogre::SceneNode** newNode) {
         SetCurrentlySelected(newNode);
@@ -87,11 +94,8 @@ void CustomApplicationContext::setup()
 
     m_SelectionContext = new SelectionContext();
 
-    //Custom Input
-    m_CustomInput = new CustomInput(m_MoveHandles, Camera, camNode,
-                                    CurrentlySelectedNode, SceneManager, m_ObjectNodes,
-                                    this->getRenderWindow(), [this](){this->shutdown();}, m_SelectionContext);
-    addInputListener(m_CustomInput);
+    camNode->setPosition(0, 0, 100);
+    camNode->lookAt(Ogre::Vector3::ZERO, Ogre::Node::TS_WORLD);
 
     g_OnSelectionModeChangedEvent.Subscribe([this](SelectionMode newMode){CheckDoAppropriateSystem(newMode);});
 }
@@ -375,20 +379,32 @@ void CustomApplicationContext::ShowSliderExample()
     ImGui::End();
 }
 
-bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool CustomApplicationContext::frameEnded(const Ogre::FrameEvent& evt)
 {
     m_UserInputSystem->Cleanup();
+    return true;
+}
 
+bool CustomApplicationContext::frameRenderingQueued(const Ogre::FrameEvent& evt)
+{
     //Click handling
     m_ClickObjectHandler->Cleanup();
-    m_ClickObjectHandler->GetFrameCommandsForInput(m_UserInputSystem, *m_SelectionContext->GetCurrentContext(), Camera);
-    m_SelectionSystem->CheckUpdateSelectedNode(m_ClickObjectHandler, *m_TheGreatContext);
+    //TODO(JohnMir): Context will be removed I think just put it in the new context
+
+    m_ClickObjectHandler->GetFrameCommandsForInput(m_UserInputSystem, Camera, m_TheGreatContext, m_MovementHandles);
+    m_SelectionSystem->CheckUpdateSelectedNode(m_ClickObjectHandler, m_TheGreatContext);
+
+    //Process Commands
+    m_CommandProcessor->ProcessMoveCommands(m_ClickObjectHandler->MoveCommandBuffer);
+    m_SelectionSystem->CheckUpdateSelectedNode(m_ClickObjectHandler, m_TheGreatContext);
 
     // Update move handles
+    /*
     if (m_MoveHandles) 
     {
         m_MoveHandles->Update();
     }
+    */
 
     //Imgui
     ImguiOverlayContext->NewFrame();

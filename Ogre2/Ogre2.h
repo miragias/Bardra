@@ -20,6 +20,7 @@
 #include "SelectionSystem.h"
 #include "UserInput.h"
 #include "ClickObjectHandler.h"
+#include "CommandProcessor.h"
 #include "Common.h"
 
 
@@ -44,11 +45,13 @@ private:
     UserInput* m_UserInputSystem;
     ClickObjectHandler* m_ClickObjectHandler;
     SelectionSystem* m_SelectionSystem;
-    AppContext* m_TheGreatContext;
+    AppContext m_TheGreatContext;
+    MovementHandles* m_MovementHandles;
+    CommandProcessor* m_CommandProcessor;
 
     void SetCurrentlySelected(Ogre::SceneNode** newNode);
     std::vector<Ogre::SceneNode*> GetWorld() const;
-    MoveHandles* getMoveHandles() { return m_MoveHandles; }
+    //MoveHandles* getMoveHandles() { return m_MoveHandles; }
     Ogre::Camera* Camera;
     Ogre::SceneNode* CamNode;
     Ogre::SceneManager* SceneManager;
@@ -60,7 +63,7 @@ private:
     std::vector<Ogre::SceneNode*> m_ObjectNodes;
     void resizeQuad();
     Ogre::ManualObject* m_ManualObject;
-    MoveHandles* m_MoveHandles;
+    //MoveHandles* m_MoveHandles;
     CustomInput* m_CustomInput;
     std::vector<TimelineEvent> m_TimelineEvents;
 	int m_SliderValue = 0; // Variable to store the slider value
@@ -102,7 +105,8 @@ protected:
     void ShowSliderExample();
 
     bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;
-    
+    bool frameEnded(const Ogre::FrameEvent& evt) override; 
+
     OgreBites::NativeWindowPair createWindow(const Ogre::String& name, uint32_t w = 0, uint32_t h = 0,
                                              Ogre::NameValuePairList miscParams = Ogre::NameValuePairList())
     {
