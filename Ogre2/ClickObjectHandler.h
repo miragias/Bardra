@@ -10,6 +10,10 @@ class ClickObjectHandler
 typedef std::vector<Ogre::SceneNode*> Selectables;
 
 public:
+    ClickObjectHandler(Ogre::RenderWindow* renderWindow)
+    {
+        m_RenderWindow = renderWindow;
+    }
     void Cleanup();
     void GetFrameCommandsForInput(UserInput* input, Ogre::Camera* camera, AppContext& context,
                                   MovementHandles* moveHandles);
@@ -26,7 +30,8 @@ private:
     void CheckUsedMoveHandles(Ogre::Camera* camera, Ogre::Vector2 mousePosition,
                                                   AppContext& AppContext);
     Ogre::Vector3 m_LastMousePos;
-    Axis m_SelectedAxis;
+    Ogre::RenderWindow* m_RenderWindow;
+	Axis m_SelectedAxis;
 };
 
 

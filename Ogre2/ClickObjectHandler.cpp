@@ -40,12 +40,12 @@ void ClickObjectHandler::GetFrameCommandsForInput(UserInput* input,Ogre::Camera*
     */
     if(input->LastMouseMovedEvent.first && input->IsDragging() && context.CurrentlySelectedNode)
     {
-        std::cout << "Mouse moved while dragging \n";
         CheckUsedMoveHandles(camera, Ogre::Vector2(input->LastMouseMovedEvent.second.x , input->LastMouseMovedEvent.second.y), context);
     }
 }
 
-Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane, const Ogre::Camera* camera) {
+Ogre::Vector3 getMouseWorldPos(const Ogre::Vector2& mousePos, const Ogre::Plane& plane, const Ogre::Camera* camera) 
+{
     Ogre::Ray mouseRay = camera->getCameraToViewportRay(mousePos.x, mousePos.y);
     std::pair<bool, float> result = mouseRay.intersects(plane);
     if (result.first) {
@@ -81,8 +81,11 @@ void ClickObjectHandler::CheckClickOnHandle(Ogre::Vector2 mousePos,
 
         Ogre::Plane dragPlane(planeNormal, context.CurrentlySelectedNode->getPosition());
         //Set the last mouse position
-        std::cout << "Set last position to: " << m_LastMousePos << "\n";
-        m_LastMousePos = getMouseWorldPos(mousePos, dragPlane, camera);
+		auto ms = Ogre::Vector2(
+			mousePos.x / float(m_RenderWindow->getWidth()),
+			mousePos.y / float(m_RenderWindow->getHeight())
+		);
+        m_LastMousePos = getMouseWorldPos(ms, dragPlane, camera);
     }
 }
 
@@ -108,17 +111,21 @@ void ClickObjectHandler::CheckUsedMoveHandles(Ogre::Camera* camera, Ogre::Vector
 
     auto targetNode = AppContext.CurrentlySelectedNode;
     Ogre::Plane dragPlane(planeNormal, targetNode->getPosition());
-    Ogre::Vector3 currentPos = getMouseWorldPos(mousePosition, dragPlane, camera);
+
+    auto ms = Ogre::Vector2(
+        mousePosition.x / float(m_RenderWindow->getWidth()),
+        mousePosition.y / float(m_RenderWindow->getHeight())
+    );
+
+    Ogre::Vector3 currentPos = getMouseWorldPos(ms, dragPlane, camera);
 
     if (currentPos != Ogre::Vector3::ZERO) 
     {
-        std::cout << "CP: " << currentPos << "\n";
-        std::cout << "lP: " << m_LastMousePos << "\n";
         Ogre::Vector3 delta = currentPos - m_LastMousePos;
-        std::cout << "Delta: " << delta << "\n";
         float projection = delta.dotProduct(moveDir);
         Ogre::Vector3 movement = moveDir * projection;
         auto targetPos = targetNode->getPosition() + movement;
+
         MoveCommandBuffer.push_back({ AppContext.CurrentlySelectedNode, targetPos});
         MoveCommandBuffer.push_back({ AppContext.MoveHandlesNode, targetPos});
 
@@ -131,6 +138,7 @@ void ClickObjectHandler::CheckUsedMoveHandles(Ogre::Camera* camera, Ogre::Vector
         }
         */
         m_LastMousePos = currentPos;
+        std::cout << "SETTING THE UKNOWN 2" << m_LastMousePos << "\n";
     }
 }
 

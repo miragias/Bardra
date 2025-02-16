@@ -90,7 +90,7 @@ void CustomApplicationContext::setup()
     m_UserInputSystem = new UserInput();
     addInputListener(m_UserInputSystem);
 
-    m_ClickObjectHandler = new ClickObjectHandler();
+    m_ClickObjectHandler = new ClickObjectHandler(this->getRenderWindow());
 
     m_SelectionContext = new SelectionContext();
 
